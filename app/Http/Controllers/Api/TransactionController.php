@@ -1,17 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\TransactionRequest;
-use App\Http\Requests\Api\UpdateTransactionRequest;
-use App\Http\Requests\StoreTransactionRequest;
 use App\Models\Transaction;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 
-class
-TransactionController extends Controller
+class TransactionController extends Controller
 {
     public function __invoke(TransactionRequest $request): Response
     {
@@ -36,6 +35,7 @@ TransactionController extends Controller
                     ->format('Y-m-d H:i:s'),
             ]);
         }
+
         return response()->noContent();
     }
 }

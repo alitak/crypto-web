@@ -6,13 +6,20 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\TransactionRequest;
+use App\Http\Resources\TransactionResource;
 use App\Models\Transaction;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 
 class TransactionController extends Controller
 {
-    public function __invoke(TransactionRequest $request): Response
+    public function index(): AnonymousResourceCollection
+    {
+        return TransactionResource::collection(Transaction::query()->latest('happened_at')->take(10)->get());
+    }
+
+    public function store(TransactionRequest $request): Response
     {
         $pattern = "/(?P<coin>[A-Za-z]+)\s(?P<event>NO MONEY|BUY PACK|SELL PAC|BELOW|NO PACK)\sprice\s(?P<price>\d+\.\d+)\savg\s(?P<avg>-?\d+\.\d+)\sstock\s(?P<stock>\d+\.\d+)\scost\s(?P<cost>\d+\.\d+)\smin\s(?P<min>\d+\.\d+)\smax\s(?P<max>\d+\.\d+)\spack\s(?P<pack>\d+)\sacc\s(?P<acc>\d+\.\d+)(?:\stotal\s(?P<total>\d+\.\d+))?(?:\squan\s(?P<quan>\d+\.\d+))?/";
 
@@ -29,7 +36,7 @@ class TransactionController extends Controller
                 'package_count' => $matches['pack'],
                 'account'       => $matches['acc'],
                 'total'         => $matches['total'] ?? null,
-                'quantity'      => $matches['quantity'] ?? null,
+                'quantity'      => $matches['quan'] ?? null,
                 'happened_at'   => Carbon::createFromFormat('YmdHi', $request->happened_at, 'UTC')
                     ->setTimezone(config('app.timezone'))
                     ->format('Y-m-d H:i:s'),

@@ -7,7 +7,7 @@ import LatestTransaction from "@/Components/LatestTransaction.vue"
 <template>
     <DefaultLayout title="DashBoard">
         <div class="grid grid-cols-12 gap-4 md:gap-6 2xl:gap-9">
-            <TrendingStocks/>
+<!--            <TrendingStocks/>-->
 
             <LatestTransaction/>
         </div>

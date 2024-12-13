@@ -5,4 +5,5 @@ declare(strict_types=1);
 use App\Http\Controllers\Api\TransactionController;
 use Illuminate\Support\Facades\Route;
 
-Route::post('transactions', TransactionController::class);
+Route::get('transactions', [TransactionController::class, 'index'])->name('transactions.index');
+Route::post('transactions', [TransactionController::class, 'store']);

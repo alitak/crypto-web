@@ -14,20 +14,20 @@ class TransactionController extends Controller
 {
     public function __invoke(TransactionRequest $request): Response
     {
-        $pattern = '/(?<coin>[A-Z]+)\s+(?<event>[A-Z]+).*?price\s+(?<price>\d+\.\d+).*?avg\s+(?<average>\d+\.\d+).*?stock\s+(?<stock>\d+\.\d+).*?cost\s+(?<cost>\d+\.\d+).*?min\s+(?<min_threshold>\d+\.\d+).*?max\s+(?<max_threshold>\d+\.\d+).*?pack\s+(?<package_count>\d+).*?acc\s+(?<account>\d+\.\d+).*?total\s+(?<total>\d+\.\d+).*?quan\s+(?<quantity>\d+\.\d+)/';
+        $pattern = "/(?P<coin>[A-Za-z]+)\s(?P<event>NO MONEY|BUY PACK|SELL PAC|BELOW|NO PACK)\sprice\s(?P<price>\d+\.\d+)\savg\s(?P<avg>-?\d+\.\d+)\sstock\s(?P<stock>\d+\.\d+)\scost\s(?P<cost>\d+\.\d+)\smin\s(?P<min>\d+\.\d+)\smax\s(?P<max>\d+\.\d+)\spack\s(?P<pack>\d+)\sacc\s(?P<acc>\d+\.\d+)(?:\stotal\s(?P<total>\d+\.\d+))?(?:\squan\s(?P<quan>\d+\.\d+))?/";
 
-        if (preg_match($pattern, $request->message, $matches)) {
+        if (preg_match($pattern, trim($request->message), $matches)) {
             Transaction::query()->create([
-                'coin'          => $matches['coin'],
-                'event'         => $matches['event'],
+                'coin'          => trim($matches['coin']),
+                'event'         => trim($matches['event']),
                 'price'         => $matches['price'],
-                'average'       => $matches['average'],
+                'average'       => $matches['avg'],
                 'stock'         => $matches['stock'],
                 'cost'          => $matches['cost'],
-                'min_threshold' => $matches['min_threshold'],
-                'max_threshold' => $matches['max_threshold'],
-                'package_count' => $matches['package_count'],
-                'account'       => $matches['account'],
+                'min_threshold' => $matches['min'],
+                'max_threshold' => $matches['max'],
+                'package_count' => $matches['pack'],
+                'account'       => $matches['acc'],
                 'total'         => $matches['total'] ?? null,
                 'quantity'      => $matches['quantity'] ?? null,
                 'happened_at'   => Carbon::createFromFormat('YmdHi', $request->happened_at, 'UTC')

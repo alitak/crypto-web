@@ -1,20 +1,19 @@
 <script setup lang="ts">
 import DefaultLayout from "@/Layouts/DefaultLayout.vue"
-import TrendingStocks from "@/Components/TrendingStocks.vue"
-import LatestTransaction from "@/Components/LatestTransaction.vue"
-import {Link} from "@inertiajs/vue3"
+import Transactions from "@/Components/Transactions.vue"
+import {usePage} from "@inertiajs/vue3"
+
+const page = usePage()
 </script>
 
 <template>
     <DefaultLayout title="DashBoard">
-        <div class="mb-4 text-center">
-            <Link class="font-bold text-black text-2xl mb-4" :href="'/'">Home</Link>
-        </div>
-
         <div class="grid grid-cols-12 gap-4 md:gap-6 2xl:gap-9">
-<!--            <TrendingStocks/>-->
+            <!--            <TrendingStocks/>-->
 
-            <LatestTransaction/>
+            <div class="col-span-12 rounded-sm border border-stroke bg-white p-2 shadow-default sm:p-7.5 xl:col-span-7">
+                <Transactions :transactions="page.props.transactions"/>
+            </div>
         </div>
     </DefaultLayout>
 </template>

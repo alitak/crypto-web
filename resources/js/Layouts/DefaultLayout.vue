@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {Head} from "@inertiajs/vue3"
+import {Head, Link} from "@inertiajs/vue3"
 
 defineProps<{
     title: string
@@ -12,8 +12,13 @@ defineProps<{
     <div class="flex h-screen overflow-hidden">
 
         <div class="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
-            <main class="relative z-20">
-                <div class="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">
+            <main class="relative z-20 pt-4">
+
+                <div class="mb-4 text-center">
+                    <Link class="font-bold text-black text-2xl mb-4" :href="'/'">Home</Link>
+                </div>
+
+                <div class="mx-auto max-w-screen-2xl px-4 md:px-6 2xl:px-10">
                     <slot></slot>
                 </div>
             </main>

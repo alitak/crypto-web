@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import type Wallet from '@/Types/Models/Wallet'
+import {usePoll} from "@inertiajs/vue3"
 
 const props = defineProps<{
     wallets: {
         data: Wallet[]
     }
 }>()
+
+usePoll(10000)
 </script>
 <!--PAC  MIN  MAX-->
 <template>

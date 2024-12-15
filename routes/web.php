@@ -16,7 +16,6 @@ Route::get('transactions', TransactionController::class)->name('transactions.ind
 
 Route::post('fcm-tokens', FcmTokenController::class)->name('fcm-tokens.store');
 
-
 Route::get('t', function () {
     User::all()->each(fn ($user) => $user->notify(new TransactionTriggeredNotification(Transaction::query()->latest()->first())));
 });

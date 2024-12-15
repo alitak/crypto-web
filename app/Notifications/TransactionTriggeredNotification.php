@@ -24,12 +24,18 @@ class TransactionTriggeredNotification extends Notification
 
     public function toFcm($notifiable): FcmMessage
     {
-        return new FcmMessage(
+        return (new FcmMessage(
             notification: new FcmNotification(
                 title: $this->transaction->coin,
-                body: $this->transaction->type,
-                image: url('images/logo') . $this->transaction->coin . '.svg',
-            )
-        );
+                body: $this->transaction->event,
+                image: url('images/logo/' . $this->transaction->coin . '.svg'),
+            )))
+            ->custom([
+                'webpush' => [
+                    'fcm_options' => [
+                        'link' => url('/'),
+                    ],
+                ],
+            ]);
     }
 }

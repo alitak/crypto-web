@@ -26,9 +26,8 @@ const props = defineProps<{
                     <h5 class="font-medium text-black">{{ transaction.happened_at }}</h5>
                 </div>
                 <div class="col-span-1 h-11.5 w-11.5 items-center justify-center rounded-full bg-[#EEF2F8]">
-                    <img :src="`/images/logo/${transaction.coin}.svg`" alt="brand" class="object-cover"/>
+                    <img :src="`/images/logo/${transaction.coin}.svg`" :alt="transaction.coin" class="object-cover"/>
                 </div>
-
 
                 <div class="col-span-1 sm:col-span-1">
                     <h5 class="font-bold text-black">{{ transaction.coin }}</h5>

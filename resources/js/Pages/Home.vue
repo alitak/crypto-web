@@ -1,17 +1,22 @@
 <script setup lang="ts">
+import {onMounted} from "vue"
+import axios from "axios"
+import {route} from "ziggy-js"
+import {router} from "@inertiajs/vue3"
+import {initializeApp} from "firebase/app"
 import DefaultLayout from "@/Layouts/DefaultLayout.vue"
 import Transactions from "@/Components/Transactions.vue"
-import {onMounted} from "vue"
-import {initializeApp} from "firebase/app"
+import TrendingStocks from "@/Components/TrendingStocks.vue"
 import {getMessaging, getToken, onMessage} from "firebase/messaging"
 import type Transaction from "@/Types/Models/Transaction"
-import axios from "axios";
-import {route} from "ziggy-js";
-import {router} from "@inertiajs/vue3"
+import type Wallet from "@/Types/Models/Wallet"
 
 const props = defineProps<{
     transactions: {
         data: Transaction[]
+    }
+    wallets: {
+        data: Wallet[]
     }
 }>()
 
@@ -42,7 +47,7 @@ onMounted(() => {
 <template>
     <DefaultLayout title="DashBoard">
         <div class="grid grid-cols-12 gap-4 md:gap-6 2xl:gap-9">
-            <!--            <TrendingStocks/>-->
+            <TrendingStocks :wallets="props.wallets"/>
 
             <div class="col-span-12 rounded-sm border border-stroke bg-white p-2 shadow-default sm:p-7.5 xl:col-span-7">
                 <Transactions :transactions="props.transactions"/>

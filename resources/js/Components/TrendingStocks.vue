@@ -37,9 +37,9 @@ usePoll(10000)
                 <div class="col-span-2 flex flex-col items-center">
                     <div class="text-left font-mono text-sm md:text-base">
                         <p>avg {{ item.avg_price }}₮</p>
-                        <p :class="{'font-bold text-md text-blue-500': item.min_percent < item.max_percent}">min {{ item.min_threshold }}₮ | {{ item.min_percent }}%</p>
+                        <p :class="{'font-bold text-md': item.min_percent < item.max_percent, 'text-green-500': item.min_percent < 0.5}">min {{ item.min_threshold }}₮ | {{ item.min_percent }}%</p>
                         <p>cur {{ item.current_price }}₮</p>
-                        <p :class="{'font-bold text-md text-violet-500': item.max_percent < item.min_percent}">max {{ item.max_threshold }}₮ | {{ item.max_percent }}%</p>
+                        <p :class="{'font-bold text-md': item.max_percent < item.min_percent, 'text-green-500': item.max_percent < 0.5}">max {{ item.max_threshold }}₮ | {{ item.max_percent }}%</p>
                         <p>stock {{ item.stock }}</p>
                         <p>cost {{ item.cost }}₮</p>
                     </div>

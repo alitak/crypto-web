@@ -17,7 +17,7 @@ messaging.onBackgroundMessage(payload => {
 
     const title = payload.notification.title
     const notification = {
-        body: "Notification Body",
+        body: payload.notification.body,
         icon: payload.notification.image,
         data: {
             url: payload.fcmOptions.link

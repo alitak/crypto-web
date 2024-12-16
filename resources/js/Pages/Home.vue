@@ -59,8 +59,8 @@ onMounted(() => {
     <DefaultLayout title="DashBoard">
         <div class="grid grid-cols-12 gap-4 md:gap-6 2xl:gap-9">
             <div class="relative col-span-12 rounded-sm bg-white shadow-default">
-                <div class="grid grid-cols-3 gap-3 rounded-[5px] p-3">
-                    <div class="col-span-1 flex flex-col items-center font-medium px-10 border-r border-stroke ">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 rounded-[5px] p-3">
+                    <div class="col-span-1 flex flex-col items-center font-medium py-3 sm:py-0 px-10 border-b sm:border-b-0 sm:border-r border-stroke ">
                         <div class="flex items-center">
                             <div class="h-10.5 w-10.5 overflow-hidden rounded-full mr-10">
                                 <img :src="Chart" alt="chart"/>
@@ -71,7 +71,7 @@ onMounted(() => {
                             </div>
                         </div>
                     </div>
-                    <div class="col-span-1 flex flex-col items-center font-medium px-10 border-r border-stroke ">
+                    <div class="col-span-1 flex flex-col items-center font-medium py-3 sm:py-0 px-10 border-b sm:border-b-0 sm:border-r border-stroke ">
                         <div class="flex items-center">
                             <div class="h-10.5 w-10.5 overflow-hidden rounded-full mr-10">
                                 <img :src="Profit" alt="profit"/>
@@ -82,7 +82,7 @@ onMounted(() => {
                             </div>
                         </div>
                     </div>
-                    <div class="col-span-1 flex flex-col items-center font-medium px-10">
+                    <div class="col-span-1 flex flex-col items-center font-medium py-3 sm:py-0 px-10">
                         <div class="flex items-center">
                             <div class="h-10.5 w-10.5 overflow-hidden rounded-full mr-10">
                                 <img :src="Interest" alt="interest"/>

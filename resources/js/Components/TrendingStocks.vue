@@ -10,7 +10,7 @@ const props = defineProps<{
 
 usePoll(10000)
 </script>
-<!--PAC  MIN  MAX-->
+
 <template>
     <div class="col-span-12 w-full rounded-sm border border-stroke bg-white px-3 md:px-5 pb-10 pt-3 md:pt-7.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7 xl:col-span-5">
         <template v-for="(item, index) in props.wallets" :key="index">

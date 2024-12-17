@@ -66,10 +66,9 @@ onMounted(() => {
                             <div class="h-10.5 w-10.5 overflow-hidden rounded-full mr-10">
                                 <img :src="Chart" alt="chart"/>
                             </div>
-                            <div class="text-right">
+                            <div class="text-left">
                                 <h4 class="text-xl font-bold">{{ props.total.total_starting_balance }}₮</h4>
-                                <h4 class="text-xl font-bold">{{ props.total.total_balance }}₮</h4>
-                                <h4 class="text-xl font-bold">{{ props.total.total_account }}₮</h4>
+                                <h4 class="text-xl font-bold">{{ props.total.total_balance }}₮ ({{ props.total.total_account }}₮)</h4>
                             </div>
                         </div>
                     </div>

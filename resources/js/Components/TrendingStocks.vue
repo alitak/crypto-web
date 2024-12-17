@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type Wallet from '@/Types/Models/Wallet'
 import {usePoll} from "@inertiajs/vue3"
+import NumberLine from "@/Components/NumberLine.vue"
+import {ref} from "vue"
 
 const props = defineProps<{
     wallets: {
@@ -8,14 +10,24 @@ const props = defineProps<{
     }
 }>()
 
+const fields = ref([
+    {label: "avg", key: "avg_price", suffix: "₮"},
+    {label: "stock", key: "stock", suffix: ""},
+    {label: "cost", key: "cost", suffix: "₮"},
+    {label: "current", key: "package_count", suffix: ""},
+    {label: "start", key: "start_account", suffix: "₮"},
+    {label: "account", key: "account", suffix: "₮"},
+    {label: "package", key: "packet_price", suffix: "₮"},
+    {label: "min", key: "min_threshold_percent_value", suffix: "%"},
+    {label: "max", key: "max_threshold_percent_value", suffix: "%"},
+])
 usePoll(10000)
 </script>
 
 <template>
     <div class="col-span-12 w-full rounded-sm bg-white px-3 md:px-5 pb-10 pt-3 md:pt-7.5 shadow-default sm:px-7 xl:col-span-5">
         <template v-for="(item, index) in props.wallets" :key="index">
-            <div class="grid grid-cols-4 gap-3 rounded-[5px] p-3 md:p-5">
-                <!-- Oszlop 1 -->
+            <div class="grid grid-cols-6 gap-x-2 mb-5 pb-3 border-b border-bodydark1">
                 <div class="col-span-1 flex flex-col items-center font-medium">
                     <div class="h-11.5 w-11.5 flex items-center rounded-full bg-[#EEF2F8]">
                         <img :src="`/images/logo/${item.coin}.svg`" :alt="item.coin" class="h-full w-full object-contain"/>
@@ -33,26 +45,20 @@ usePoll(10000)
                         </p>
                     </div>
                 </div>
-                <!-- Oszlop 2 -->
-                <div class="col-span-2 flex flex-col items-center">
-                    <div class="text-left font-mono text-sm md:text-base">
-                        <p class="mb-2">avg {{ item.avg_price }}₮</p>
-                        <p :class="{'font-bold text-md': item.min_percent < item.max_percent, 'text-green-500': item.min_percent < 0.5}">{{ item.min_threshold }}₮ | {{ item.min_percent }}%</p>
-                        <p>{{ item.current_price }}₮</p>
-                        <p class="mb-2" :class="{'font-bold text-md': item.max_percent < item.min_percent, 'text-green-500': item.max_percent < 0.5}">{{ item.max_threshold }}₮ | {{ item.max_percent }}%</p>
-                        <p>stock {{ item.stock }}</p>
-                        <p>cost {{ item.cost }}₮</p>
-                    </div>
-                </div>
-                <!-- Oszlop 3 -->
-                <div class="col-span-1 flex flex-col items-center">
-                    <div class="text-left font-mono text-xs md:text-sm font-medium">
-                        <p>c {{ item.package_count }}</p>
-                        <p>start {{ item.start_account }}₮</p>
-                        <p class="mb-5">acc {{ item.account }}₮</p>
-                        <p>pac {{ item.packet_price }}₮</p>
-                        <p>min {{ item.min_threshold_percent_value }}%</p>
-                        <p>max {{ item.max_threshold_percent_value }}%</p>
+
+                <div class="col-span-5 flex flex-col items-center">
+                    <NumberLine
+                        class="mt-2 mb-5 w-full"
+                        :min="item.min_threshold"
+                        :max="item.max_threshold"
+                        :variable="item.current_price"
+                    ></NumberLine>
+
+                    <div class="w-full grid grid-cols-3 gap-x-3 gap-y-2 font-mono text-sm md:text-base mb-2 text-center">
+                        <div v-for="field in fields" :key="field.key" class="flex flex-col items-center sm:flex-row sm:justify-evenly sm:text-left">
+                            <div class="mr-0 md:mr-1">{{ field.label }}</div>
+                            <div>{{ item[field.key] }}{{ field.suffix }}</div>
+                        </div>
                     </div>
                 </div>
             </div>

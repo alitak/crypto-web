@@ -62,6 +62,7 @@ export default {
                 success: "#219653",
                 danger: "#D34053",
                 warning: "#FFA70B",
+                violet: "#7C3AED",
             },
             fontSize: {
                 "title-xxl": ["44px", "55px"],

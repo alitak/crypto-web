@@ -11,7 +11,7 @@ const props = defineProps<{
 <template>
     <div class="flex flex-col gap-[25px]">
         <template v-for="(transaction, index) in props.transactions.data" :key="index">
-            <div class="grid grid-cols-4 items-center gap-1 sm:gap-2 sm:grid-cols-12 mb-2">
+            <div class="grid grid-cols-4 items-center gap-1 sm:gap-2 sm:grid-cols-12">
                 <div class="col-span-4 sm:col-span-12 text-center">
                     <h5 class="font-medium text-black">{{ transaction.happened_at }}</h5>
                 </div>

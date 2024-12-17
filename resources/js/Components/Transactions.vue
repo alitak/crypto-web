@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import {Link, usePage, WhenVisible} from "@inertiajs/vue3"
-import {route} from "ziggy-js"
 import type Transaction from "@/Types/Models/Transaction"
 
 const props = defineProps<{
@@ -11,14 +9,6 @@ const props = defineProps<{
 </script>
 
 <template>
-
-    <div class="mb-10 flex flex-wrap items-center justify-between gap-2">
-        <h4 class="text-title-sm2 font-bold text-black">Latest Transaction</h4>
-        <Link :href="route('transactions.index')" class="text-xs font-medium text-gray-400">Transactions</Link>
-    </div>
-<!--    <pre>-->
-<!--    {{ page.props.transactions.data.length }}-->
-<!--</pre>-->
     <div class="flex flex-col gap-[25px]">
         <template v-for="(transaction, index) in props.transactions.data" :key="index">
             <div class="grid grid-cols-4 items-center gap-1 sm:gap-2 sm:grid-cols-12 mb-2">
@@ -61,24 +51,24 @@ const props = defineProps<{
             </div>
             <!-- Transaction item end -->
         </template>
-<!--        <WhenVisible-->
-<!--            data="transactions"-->
-<!--            always-->
-<!--            >-->
-<!--            :always="props.transactions?.current_page < props.transactions?.last_page"-->
-<!--            :params="{-->
-<!--                data: {-->
-<!--                    page: props.transactions.current_page + 1,-->
-<!--                },-->
-<!--                only: ['transactions'],-->
-<!--                preserveUrl: true,-->
-<!--            }"-->
-<!--        >-->
-<!--            <template #fallback>-->
-<!--                <div>Loading...</div>-->
-<!--            </template>-->
+        <!--        <WhenVisible-->
+        <!--            data="transactions"-->
+        <!--            always-->
+        <!--            >-->
+        <!--            :always="props.transactions?.current_page < props.transactions?.last_page"-->
+        <!--            :params="{-->
+        <!--                data: {-->
+        <!--                    page: props.transactions.current_page + 1,-->
+        <!--                },-->
+        <!--                only: ['transactions'],-->
+        <!--                preserveUrl: true,-->
+        <!--            }"-->
+        <!--        >-->
+        <!--            <template #fallback>-->
+        <!--                <div>Loading...</div>-->
+        <!--            </template>-->
 
 
-<!--        </WhenVisible>-->
+        <!--        </WhenVisible>-->
     </div>
 </template>

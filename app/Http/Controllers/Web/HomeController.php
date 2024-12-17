@@ -24,7 +24,7 @@ class HomeController
         return Inertia::render('Home', [
             'transactions' => Inertia::merge(
                 TransactionResource::collection(
-                    Transaction::query()->latest('happened_at')->paginate(10)
+                    Transaction::query()->latest('happened_at')->paginate(17)
                 ),
             ),
             'wallets'      => WalletResource::collection($wallet),
@@ -49,6 +49,7 @@ class HomeController
         return [
             'total_starting_balance' => Number::format($totalStartingBalance, 2, locale: 'hu-HU'),
             'total_balance'          => Number::format($totalBalance, 2, locale: 'hu-HU'),
+            'total_account'          => Number::format($wallet->sum('account'), 2, locale: 'hu-HU'),
             'total_profit'           => Number::format($totalProfit, 2, locale: 'hu-HU'),
             'total_pnl'              => Number::percentage($totalPnl, 2, locale: 'hu-HU'),
             'monthly_interest'       => Number::percentage($monthlyInterest, 2, locale: 'hu-HU'),

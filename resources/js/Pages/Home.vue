@@ -24,6 +24,7 @@ const props = defineProps<{
     total: {
         total_starting_balance: string
         total_balance: string
+        total_account: string
         total_profit: string
         total_pnl: string
         monthly_interest: string
@@ -68,6 +69,7 @@ onMounted(() => {
                             <div class="text-right">
                                 <h4 class="text-xl font-bold">{{ props.total.total_starting_balance }}₮</h4>
                                 <h4 class="text-xl font-bold">{{ props.total.total_balance }}₮</h4>
+                                <h4 class="text-xl font-bold">{{ props.total.total_account }}₮</h4>
                             </div>
                         </div>
                     </div>

@@ -48,6 +48,7 @@ usePoll(10000)
                 <div class="col-span-1 flex flex-col items-center">
                     <div class="text-left font-mono text-xs md:text-sm font-medium">
                         <p>c {{ item.package_count }}</p>
+                        <p>start {{ item.start_account }}₮</p>
                         <p class="mb-5">acc {{ item.account }}₮</p>
                         <p>pac {{ item.packet_price }}₮</p>
                         <p>min {{ item.min_threshold_percent_value }}%</p>

@@ -25,9 +25,9 @@ usePoll(10000)
 </script>
 
 <template>
-    <div class="col-span-12 w-full rounded-sm bg-white px-3 md:px-5 pb-10 pt-3 md:pt-7.5 shadow-default sm:px-7 xl:col-span-5">
+    <div class="col-span-12 w-full rounded-sm bg-white px-3 md:px-5 py-3 md:pt-7.5 shadow-default sm:px-7 xl:col-span-5">
         <template v-for="(item, index) in props.wallets" :key="index">
-            <div class="grid grid-cols-6 gap-x-2 mb-5 pb-3 border-b border-bodydark1">
+            <div class="grid grid-cols-6 gap-x-2 mb-5 pb-3 border-b border-bodydark1" :class="index == props.wallets.length - 1 ? 'border-none mb-0 pb-0' : ''">
                 <div class="col-span-1 flex flex-col items-center font-medium">
                     <div class="h-11.5 w-11.5 flex items-center rounded-full bg-[#EEF2F8]">
                         <img :src="`/images/logo/${item.coin}.svg`" :alt="item.coin" class="h-full w-full object-contain"/>

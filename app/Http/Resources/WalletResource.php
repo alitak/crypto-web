@@ -17,6 +17,7 @@ class WalletResource extends JsonResource
         return [
             'coin'                        => $this->coin,
             'package_count'               => $this->package_count,
+            'trigger_price'               => $this->trigger_price,
             'current_price'               => $this->current_price,
             'min_threshold'               => $this->min_threshold,
             'min_percent'                 => round((($this->current_price - $this->min_threshold) / $this->min_threshold) * 100, 2),

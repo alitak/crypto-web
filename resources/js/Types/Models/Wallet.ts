@@ -1,6 +1,7 @@
-export default interface Transaction {
+export default interface Wallet {
     coin: string
     package_count: number
+    trigger_price: number
     current_price: number
     min_threshold: number
     min_percent: number

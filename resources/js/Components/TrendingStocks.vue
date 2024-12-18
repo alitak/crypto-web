@@ -5,12 +5,10 @@ import NumberLine from "@/Components/NumberLine.vue"
 import {ref} from "vue"
 
 const props = defineProps<{
-    wallets: {
-        data: Wallet[]
-    }
+    wallets: Wallet[]
 }>()
 
-const fields = ref([
+const fields = ref<{ label: string; key: keyof Wallet; suffix: string }[]>([
     {label: "avg", key: "avg_price", suffix: "₮"},
     {label: "stock", key: "stock", suffix: ""},
     {label: "cost", key: "cost", suffix: "₮"},
@@ -52,6 +50,7 @@ usePoll(10000)
                         :min="item.min_threshold"
                         :max="item.max_threshold"
                         :variable="item.current_price"
+                        :fixed="item.trigger_price"
                     ></NumberLine>
 
                     <div class="w-full grid grid-cols-3 gap-x-3 gap-y-2 font-mono text-sm md:text-base mb-2 text-center">

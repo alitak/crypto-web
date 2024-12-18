@@ -48,7 +48,7 @@ usePoll(10000)
 
                 <div class="col-span-5 flex flex-col items-center">
                     <NumberLine
-                        class="mt-2 mb-5 w-full"
+                        class="mb-5"
                         :min="item.min_threshold"
                         :max="item.max_threshold"
                         :variable="item.current_price"

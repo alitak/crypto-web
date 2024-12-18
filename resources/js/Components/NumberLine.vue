@@ -17,13 +17,13 @@ const variableLeftPercent = computed(() => {
 </script>
 
 <template>
-    <div class="relative w-full h-12">
+    <div class="relative w-full h-12 py-8 px-1">
         <!-- Számegyenes -->
         <div class="relative h-1 bg-bodydark1">
             <!-- Minimum érték -->
             <div class="absolute top-0 left-0 transform -translate-y-3 flex flex-col items-center">
+                <span class="absolute text-sm text-meta-10 -top-5 -left-2" v-text="min"></span>
                 <div class="h-10 w-[2px] bg-meta-10"></div>
-                <span class="text-sm text-meta-10 mt-4" v-text="min"></span>
             </div>
 
 <!--            &lt;!&ndash; Fix érték (arányos helyzetben) &ndash;&gt;-->
@@ -39,18 +39,14 @@ const variableLeftPercent = computed(() => {
                 class="absolute top-0 flex flex-col items-center transform -translate-y-3"
                 :style="{ left: variableLeftPercent }">
                 <div class="h-10 w-[2px] bg-red"></div>
-                <span class="text-sm text-red font-bold" v-text="variable"></span>
+                <span class="absolute text-sm text-red font-bold top-10" v-text="variable"></span>
             </div>
 
             <!-- Maximum érték -->
             <div class="absolute top-0 right-0 transform -translate-y-3 flex flex-col items-center">
+                <span class="absolute text-sm text-violet -top-5 -right-2" v-text="max"></span>
                 <div class="h-10 w-[2px] bg-violet"></div>
-                <span class="text-sm text-violet mt-4" v-text="max"></span>
             </div>
         </div>
     </div>
 </template>
-
-<style scoped>
-
-</style>

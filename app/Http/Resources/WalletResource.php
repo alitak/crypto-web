@@ -34,7 +34,7 @@ class WalletResource extends JsonResource
             'fees'                        => $this->fees,
             'packet_price'                => $this->packet_price,
             'min_threshold_percent_value' => round((1 - $this->min_threshold_percent_value) * 100, 1),
-            'max_threshold_percent_value' => round(($this->max_threshold_percent_value - 1) * 100),
+            'max_threshold_percent_value' => round(($this->max_threshold_percent_value - 1) * 100, 1),
             'start_account'               => $this->start_account,
         ];
     }

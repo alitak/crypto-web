@@ -20,4 +20,7 @@ export default interface Wallet {
     min_threshold_percent_value: number
     max_threshold_percent_value: number
     start_account: number
+    potential_value: number
+    potential_account: number
+    potential_profit: number
 }

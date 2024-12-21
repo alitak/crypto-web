@@ -18,6 +18,9 @@ const fields = ref<{ label: string; key: keyof Wallet; suffix: string }[]>([
     {label: "package", key: "packet_price", suffix: "₮"},
     {label: "min", key: "min_threshold_percent_value", suffix: "%"},
     {label: "max", key: "max_threshold_percent_value", suffix: "%"},
+    {label: "value", key: "potential_value", suffix: "₮"},
+    {label: "account", key: "potential_account", suffix: "₮"},
+    {label: "profit", key: "potential_profit", suffix: "₮"},
 ])
 usePoll(10000)
 </script>
@@ -35,11 +38,11 @@ usePoll(10000)
                             {{ item.coin }}
                         </h5>
                         <p>{{ item.current_value }}₮</p>
-                        <p class="mt-3" :class="item.current_pnl >= 0 ? 'text-meta-3' : 'text-red'">
-                            <span v-text="item.current_pnl >= 0 ? '+' : ''"></span> {{ item.current_pnl }}%
-                        </p>
+<!--                        <p class="mt-3" :class="item.current_pnl >= 0 ? 'text-meta-3' : 'text-red'">-->
+<!--                            <span v-text="item.current_pnl >= 0 ? '+' : ''"></span> {{ item.current_pnl }}%-->
+<!--                        </p>-->
                         <p :class="item.current_pnl >= 0 ? 'text-meta-3' : 'text-red'">
-                            <span v-text="item.current_pnl >= 0 ? '+' : ''"></span> {{ item.profit }}₮
+                            {{ item.profit }}₮
                         </p>
                     </div>
                 </div>

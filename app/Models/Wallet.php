@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id
  * @property string $coin
  * @property int $package_count
+ * @property float|null $trigger_price
  * @property float $current_price
  * @property float $min_threshold
  * @property float $max_threshold
@@ -46,6 +47,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Wallet whereQuantity($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Wallet whereStartAccount($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Wallet whereStock($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Wallet whereTriggerPrice($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Wallet whereUpdatedAt($value)
  *
  * @mixin \Illuminate\Database\Eloquent\Model
@@ -65,6 +67,7 @@ class Wallet extends Model
     {
         return [
             'package_count'               => 'int',
+            'trigger_price'               => 'float',
             'current_price'               => 'float',
             'min_threshold'               => 'float',
             'max_threshold'               => 'float',

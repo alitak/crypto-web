@@ -85,7 +85,7 @@ onMounted(() => {
                             </h4>
                             <h4 class="text-xl font-bold">
                                 {{ props.total.total_pnl }}
-                                ({{ props.total.total_potential_pnl }}₮)
+                                ({{ props.total.total_potential_pnl }})
                             </h4>
                         </div>
                     </div>
@@ -96,11 +96,11 @@ onMounted(() => {
                         <div class="text-right">
                             <h4 class="text-xl font-bold">
                                 {{ props.total.monthly_interest }}
-                                ({{ props.total.potential_monthly_interest }}₮)
+                                ({{ props.total.potential_monthly_interest }})
                             </h4>
                             <h4 class="text-xl font-bold">
                                 {{ props.total.yearly_interest }}
-                                ({{ props.total.potential_yearly_interest }}₮)
+                                ({{ props.total.potential_yearly_interest }})
                             </h4>
                         </div>
                     </div>

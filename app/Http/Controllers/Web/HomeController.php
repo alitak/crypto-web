@@ -17,6 +17,8 @@ class HomeController
 {
     public const START_DATE = '2024-12-02';
 
+    public const FEE = 0.00075;
+
     public function __invoke(): Response
     {
         $wallet = Wallet::query()->orderBy('coin')->get();
@@ -29,11 +31,11 @@ class HomeController
             for ($i = 0;$i <= $wallet->package_count;$i++) {
                 $quantity = $wallet->packet_price / $maxThreshold;
                 $stock -= $quantity;
-                $wallet->potential_value += $quantity * $maxThreshold;
+                $wallet->potential_value = $wallet->potential_value + $quantity * $maxThreshold - $quantity * $maxThreshold * self::FEE;
                 $maxThreshold *= $wallet->max_threshold_percent_value;
             }
 
-            $wallet->potential_value += $stock * $maxThreshold;
+            $wallet->potential_value = $wallet->potential_value + $stock * $maxThreshold - $stock * $maxThreshold * self::FEE;
             $wallet->potential_account = $wallet->account + $wallet->potential_value;
             $wallet->potential_profit = $wallet->potential_account - $wallet->start_account;
         });

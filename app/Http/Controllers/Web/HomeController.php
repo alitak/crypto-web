@@ -9,15 +9,18 @@ use App\Http\Resources\WalletResource;
 use App\Models\Transaction;
 use App\Models\Wallet;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Number;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class HomeController
 {
-    public const START_DATE = '2024-12-02';
+    public const int START_YEAR = 2024;
+    public const int START_MONTH = 12;
+    public const int START_DAY = 1;
 
-    public const FEE = 0.00075;
+    public const float FEE = 0.00075;
 
     public function __invoke(): Response
     {
@@ -54,8 +57,7 @@ class HomeController
     protected function calculateTotals(Collection $wallet): array
     {
         $totalStartingBalance = $wallet->sum('start_account');
-        $days = now()->diff(self::START_DATE)->absolute()->get('days');
-
+        $days = (int) Carbon::createFromDate(self::START_YEAR, self::START_MONTH, self::START_DAY)->diff(now())->totalDays;
         $totalBalance = $wallet->sum(static fn (Wallet $wallet): float => $wallet->stock * $wallet->current_price + $wallet->account);
         $totalProfit = $totalBalance - $totalStartingBalance;
         list($totalPnl, $monthlyInterest, $yearlyInterest) = $this->calculateInterest($totalProfit, $totalStartingBalance, $days);

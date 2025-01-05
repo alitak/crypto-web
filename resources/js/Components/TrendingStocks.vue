@@ -22,7 +22,9 @@ const fields = ref<{ label: string; key: keyof Wallet; suffix: string }[]>([
     {label: "account", key: "potential_account", suffix: "₮"},
     {label: "profit", key: "potential_profit", suffix: "₮"},
 ])
-usePoll(10000)
+usePoll(10000, {
+    'only': ['wallets', 'total']
+})
 </script>
 
 <template>

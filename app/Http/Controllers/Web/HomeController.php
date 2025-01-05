@@ -46,11 +46,11 @@ class HomeController
         return Inertia::render('Home', [
             'transactions' => Inertia::merge(
                 TransactionResource::collection(
-                    Transaction::query()->latest('happened_at')->paginate(17)
+                    Transaction::query()->latest('happened_at')->paginate(20)
                 ),
             ),
-            'wallets'      => WalletResource::collection($wallet),
-            'total'        => $this->calculateTotals($wallet),
+            'wallets'      => fn() => WalletResource::collection($wallet),
+            'total'        => fn() => $this->calculateTotals($wallet),
         ]);
     }
 

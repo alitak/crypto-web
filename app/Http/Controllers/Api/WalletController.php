@@ -16,7 +16,7 @@ class WalletController extends Controller
     public function __invoke(WalletRequest $request): Response
     {
         foreach ($request->data as $data) {
-            $data['coin'] = Str::of($data['coin'])->replace('USDT', '')->upper()->toString();
+            $data['coin'] = Str::of($data['coin'])->replace('USDC', '')->upper()->toString();
             Wallet::query()->updateOrCreate(['coin' => $data['coin']], Arr::except($data, 'coin'));
         }
 

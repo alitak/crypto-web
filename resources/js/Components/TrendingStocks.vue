@@ -22,8 +22,18 @@ const fields = ref<{ label: string; key: keyof Wallet; suffix: string }[]>([
     {label: "account", key: "potential_account", suffix: "₮"},
     {label: "profit", key: "potential_profit", suffix: "₮"},
 ])
+
+const coinColor = (avgPrice: number, currentPrice: number, maxThreshold: number): string => {
+    if (avgPrice < currentPrice) {
+        return "text-purple-700"
+    } else if (avgPrice < maxThreshold) {
+        return "text-blue-500"
+    }
+    return "text-black"
+}
+
 usePoll(10000, {
-    'only': ['wallets', 'total']
+    "only": ["wallets", "total"]
 })
 </script>
 
@@ -36,13 +46,10 @@ usePoll(10000, {
                         <img :src="`/images/logo/${item.coin}.svg`" :alt="item.coin" class="h-full w-full object-contain"/>
                     </div>
                     <div class="mt-3 text-center text-base">
-                        <h5 class="font-bold text-base text-black">
+                        <h5 class="font-bold text-xl " :class="coinColor(item.avg_price, item.current_price, item.max_threshold)">
                             {{ item.coin }}
                         </h5>
                         <p>{{ item.current_value }}₮</p>
-<!--                        <p class="mt-3" :class="item.current_pnl >= 0 ? 'text-meta-3' : 'text-red'">-->
-<!--                            <span v-text="item.current_pnl >= 0 ? '+' : ''"></span> {{ item.current_pnl }}%-->
-<!--                        </p>-->
                         <p :class="item.current_pnl >= 0 ? 'text-meta-3' : 'text-red'">
                             {{ item.profit }}₮
                         </p>

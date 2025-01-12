@@ -43,14 +43,12 @@ class HomeController
             $wallet->potential_profit = $wallet->potential_account - $wallet->start_account;
         });
 
+        $transactionPagination = Transaction::query()->latest('happened_at')->paginate(20);
         return Inertia::render('Home', [
-            'transactions' => Inertia::merge(
-                TransactionResource::collection(
-                    Transaction::query()->latest('happened_at')->paginate(20)
-                ),
-            ),
-            'wallets'      => fn() => WalletResource::collection($wallet),
-            'total'        => fn() => $this->calculateTotals($wallet),
+            'transactions' => Inertia::merge(TransactionResource::collection($transactionPagination->items())),
+            'transactionCurrentPage' => $transactionPagination->currentPage(),
+            'wallets'      => fn () => WalletResource::collection($wallet),
+            'total'        => fn () => $this->calculateTotals($wallet),
         ]);
     }
 

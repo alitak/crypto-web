@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import type Transaction from "@/Types/Models/Transaction"
+import {WhenVisible} from "@inertiajs/vue3"
 
 const props = defineProps<{
-    transactions: {
-        data: Transaction[]
-    }
+    transactions: Transaction[]
+    currentPage: number
 }>()
 </script>
 
 <template>
     <div class="flex flex-col gap-[25px]">
-        <template v-for="(transaction, index) in props.transactions.data" :key="index">
+        <template v-for="(transaction, index) in props.transactions" :key="index">
             <div class="grid grid-cols-4 items-center gap-1 sm:gap-2 sm:grid-cols-12">
                 <div class="col-span-4 sm:col-span-12 text-center">
                     <h5 class="font-medium text-black">{{ transaction.happened_at }}</h5>
@@ -51,24 +51,20 @@ const props = defineProps<{
             </div>
             <!-- Transaction item end -->
         </template>
-        <!--        <WhenVisible-->
-        <!--            data="transactions"-->
-        <!--            always-->
-        <!--            >-->
-        <!--            :always="props.transactions?.current_page < props.transactions?.last_page"-->
-        <!--            :params="{-->
-        <!--                data: {-->
-        <!--                    page: props.transactions.current_page + 1,-->
-        <!--                },-->
-        <!--                only: ['transactions'],-->
-        <!--                preserveUrl: true,-->
-        <!--            }"-->
-        <!--        >-->
-        <!--            <template #fallback>-->
-        <!--                <div>Loading...</div>-->
-        <!--            </template>-->
-
-
-        <!--        </WhenVisible>-->
+        <WhenVisible
+            always
+            data="transactions"
+            :params="{
+                        data: {
+                            page: currentPage + 1,
+                        },
+                        only: ['transactions'],
+                        preserveUrl: false,
+                    }"
+        >
+            <template #fallback>
+                <div>Loading...</div>
+            </template>
+        </WhenVisible>
     </div>
 </template>

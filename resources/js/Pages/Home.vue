@@ -15,9 +15,8 @@ import TrendingStocks from "@/Components/TrendingStocks.vue"
 import Transactions from "@/Components/Transactions.vue"
 
 const props = defineProps<{
-    transactions: {
-        data: Transaction[]
-    }
+    transactions: Transaction[]
+    transactionCurrentPage: number
     wallets: {
         data: Wallet[]
     }
@@ -110,7 +109,7 @@ onMounted(() => {
             <TrendingStocks :wallets="props.wallets"/>
 
             <div class="col-span-12 rounded-sm border border-stroke bg-white p-2 shadow-default sm:p-7.5 xl:col-span-7">
-                <Transactions :transactions="props.transactions"/>
+                <Transactions :transactions="props.transactions" :current-page="props.transactionCurrentPage"/>
             </div>
         </div>
     </DefaultLayout>

@@ -6,12 +6,14 @@ namespace App\Providers;
 
 use App\Http\Resources\TransactionResource;
 use Illuminate\Support\ServiceProvider;
+use Override;
 
 class AppServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services.
      */
+    #[Override]
     public function register(): void
     {
         //

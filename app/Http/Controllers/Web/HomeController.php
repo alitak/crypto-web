@@ -17,7 +17,9 @@ use Inertia\Response;
 class HomeController
 {
     public const int START_YEAR = 2024;
+
     public const int START_MONTH = 12;
+
     public const int START_DAY = 1;
 
     public const float FEE = 0.00075;
@@ -31,7 +33,7 @@ class HomeController
             $wallet->potential_value = 0;
             $maxThreshold = ($wallet->avg_price < $wallet->max_threshold ? $wallet->max_threshold : $wallet->avg_price);
             $stock = $wallet->stock;
-            for ($i = 0;$i <= $wallet->package_count;$i++) {
+            for ($i = 0; $i <= $wallet->package_count; $i++) {
                 $quantity = $wallet->packet_price / $maxThreshold;
                 $stock -= $quantity;
                 $wallet->potential_value = $wallet->potential_value + $quantity * $maxThreshold - $quantity * $maxThreshold * self::FEE;
@@ -43,25 +45,29 @@ class HomeController
             $wallet->potential_profit = $wallet->potential_account - $wallet->start_account;
         });
 
-        $transactionPagination = Transaction::query()->latest('happened_at')->paginate(20);
+        $transactionPagination = Transaction::query()
+            ->when(request('coin'), fn ($query, $coin) => $query->where('coin', $coin))
+            ->latest('happened_at')
+            ->paginate(20);
+
         return Inertia::render('Home', [
-            'transactions' => Inertia::merge(TransactionResource::collection($transactionPagination->items())),
+            'transactions'           => Inertia::merge(TransactionResource::collection($transactionPagination->items())),
             'transactionCurrentPage' => $transactionPagination->currentPage(),
-            'wallets'      => fn () => WalletResource::collection($wallet),
-            'total'        => fn () => $this->calculateTotals($wallet),
+            'wallets'                => fn () => WalletResource::collection($wallet),
+            'total'                  => fn (): array => $this->calculateTotals($wallet),
         ]);
     }
 
     protected function calculateTotals(Collection $wallet): array
     {
         $totalStartingBalance = $wallet->sum('start_account');
-        $days = (int) Carbon::createFromDate(self::START_YEAR, self::START_MONTH, self::START_DAY)->diff(now())->totalDays;
+        $days = (int)Carbon::createFromDate(self::START_YEAR, self::START_MONTH, self::START_DAY)->diff(now())->totalDays;
         $totalBalance = $wallet->sum(static fn (Wallet $wallet): float => $wallet->stock * $wallet->current_price + $wallet->account);
         $totalProfit = $totalBalance - $totalStartingBalance;
-        list($totalPnl, $monthlyInterest, $yearlyInterest) = $this->calculateInterest($totalProfit, $totalStartingBalance, $days);
+        [$totalPnl, $monthlyInterest, $yearlyInterest] = $this->calculateInterest($totalProfit, $totalStartingBalance, $days);
 
         $totalPotentialProfit = $wallet->sum('potential_profit');
-        list($totalPotentialPnl, $potentialMonthlyInterest, $potentialYearlyInterest) = $this->calculateInterest($totalPotentialProfit, $totalStartingBalance, $days);
+        [$totalPotentialPnl, $potentialMonthlyInterest, $potentialYearlyInterest] = $this->calculateInterest($totalPotentialProfit, $totalStartingBalance, $days);
 
         return [
             'total_starting_balance'     => Number::format($totalStartingBalance, 2, locale: 'hu-HU'),

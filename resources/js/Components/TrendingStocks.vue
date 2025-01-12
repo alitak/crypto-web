@@ -3,6 +3,7 @@ import type Wallet from '@/Types/Models/Wallet'
 import {usePoll} from "@inertiajs/vue3"
 import NumberLine from "@/Components/NumberLine.vue"
 import {ref} from "vue"
+import {route} from "ziggy-js";
 
 const props = defineProps<{
     wallets: Wallet[]
@@ -43,11 +44,15 @@ usePoll(10000, {
             <div class="grid grid-cols-6 gap-x-2 mb-5 pb-3 border-b border-bodydark1" :class="index == props.wallets.length - 1 ? 'border-none mb-0 pb-0' : ''">
                 <div class="col-span-1 flex flex-col items-center font-medium">
                     <div class="h-11.5 w-11.5 flex items-center rounded-full bg-[#EEF2F8]">
-                        <img :src="`/images/logo/${item.coin}.svg`" :alt="item.coin" class="h-full w-full object-contain"/>
+                        <a :href="`${route('home', {'coin': item.coin})}#transactions`">
+                            <img :src="`/images/logo/${item.coin}.svg`" :alt="item.coin" class="h-full w-full object-contain"/>
+                        </a>
                     </div>
                     <div class="mt-3 text-center text-base">
                         <h5 class="font-bold text-xl " :class="coinColor(item.avg_price, item.current_price, item.max_threshold)">
-                            {{ item.coin }}
+                            <a :href="`${route('home', {'coin': item.coin})}#transactions`">
+                                {{ item.coin }}
+                            </a>
                         </h5>
                         <p>{{ item.current_value }}₮</p>
                         <p :class="item.current_pnl >= 0 ? 'text-meta-3' : 'text-red'">

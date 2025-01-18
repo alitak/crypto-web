@@ -60,12 +60,11 @@ const props = defineProps<{
     </div>
     <WhenVisible
         always
-        data="transactions"
         :params="{
                         data: {
                             page: currentPage + 1,
                         },
-                        only: ['transactions'],
+                        only: ['transactions', 'transactionCurrentPage'],
                         preserveUrl: false,
                     }"
     >

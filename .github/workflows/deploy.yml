@@ -19,11 +19,18 @@ jobs:
         run: |
           TIMESTAMP=$(date +"%Y%m%d%H%M%S")
           echo "RELEASE=$TIMESTAMP" >> $GITHUB_ENV
-          ssh ${{ secrets.DEPLOY_HOST }} "mkdir -p ${{ vars.DEPLOY_PATH }}/releases/$TIMESTAMP && ln -snf ${{ vars.DEPLOY_PATH }}/shared/.env ${{ vars.DEPLOY_PATH }}/releases/$TIMESTAMP/.env && ln -snf ${{ vars.DEPLOY_PATH }}/shared/storage ${{ vars.DEPLOY_PATH }}/releases/$TIMESTAMP/storage"
+          ssh ${{ secrets.DEPLOY_HOST }} "mkdir -p ${{ secrets.DEPLOY_PATH }}/releases/$TIMESTAMP"
 
       - name: Clone repo
         run: |
-          ssh ${{ secrets.DEPLOY_HOST }} "git clone --depth=1 --branch main https://github.com/${{ github.repository }} ${{ vars.DEPLOY_PATH }}/releases/$RELEASE"
+          ssh ${{ secrets.DEPLOY_HOST }} "git clone --depth=1 --branch main https://github.com/${{ github.repository }} ${{ secrets.DEPLOY_PATH }}/releases/$RELEASE"
+
+      - name: Link shared files
+        run: |
+          ssh ${{ secrets.DEPLOY_HOST }} "
+            ln -snf ${{ secrets.DEPLOY_PATH }}/shared/.env ${{ secrets.DEPLOY_PATH }}/releases/$RELEASE/.env &&
+            ln -snf ${{ secrets.DEPLOY_PATH }}/shared/storage ${{ secrets.DEPLOY_PATH }}/releases/$RELEASE/storage
+          "
 
   composer:
     name: Install Composer dependencies

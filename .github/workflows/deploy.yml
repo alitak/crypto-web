@@ -1,0 +1,102 @@
+name: Deploy Crypto Web
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  prepare:
+    name: Prepare release directory
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.DEPLOY_KEY }}
+
+      - name: Generate release dir
+        run: |
+          TIMESTAMP=$(date +"%Y%m%d%H%M%S")
+          echo "RELEASE=$TIMESTAMP" >> $GITHUB_ENV
+          ssh ${{ secrets.DEPLOY_HOST }} "mkdir -p ${{ vars.DEPLOY_PATH }}/releases/$TIMESTAMP && ln -snf ${{ vars.DEPLOY_PATH }}/shared/.env ${{ vars.DEPLOY_PATH }}/releases/$TIMESTAMP/.env && ln -snf ${{ vars.DEPLOY_PATH }}/shared/storage ${{ vars.DEPLOY_PATH }}/releases/$TIMESTAMP/storage"
+
+      - name: Clone repo
+        run: |
+          ssh ${{ secrets.DEPLOY_HOST }} "git clone --depth=1 --branch main https://github.com/${{ github.repository }} ${{ vars.DEPLOY_PATH }}/releases/$RELEASE"
+
+  composer:
+    name: Install Composer dependencies
+    needs: prepare
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.DEPLOY_KEY }}
+
+      - name: Composer install
+        run: |
+          ssh ${{ secrets.DEPLOY_HOST }} "cd ${{ vars.DEPLOY_PATH }}/releases/$RELEASE && composer install --no-dev --optimize-autoloader"
+
+  npm:
+    name: Build frontend assets
+    needs: composer
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.DEPLOY_KEY }}
+
+      - name: NPM build
+        run: |
+          ssh ${{ secrets.DEPLOY_HOST }} "cd ${{ vars.DEPLOY_PATH }}/releases/$RELEASE && /usr/bin/npm ci && /usr/bin/npm run build-only && rm -rf node_modules"
+
+  migrate:
+    name: Run migrations and seed
+    needs: npm
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.DEPLOY_KEY }}
+
+      - name: Artisan migrate
+        run: |
+          ssh ${{ secrets.DEPLOY_HOST }} "cd ${{ vars.DEPLOY_PATH }}/releases/$RELEASE && php artisan migrate --seed --force"
+
+  activate:
+    name: Activate release & restart FPM
+    needs: migrate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.DEPLOY_KEY }}
+
+      - name: Switch symlink and restart PHP
+        run: |
+          ssh ${{ secrets.DEPLOY_HOST }} "
+            ln -sfn ${{ vars.DEPLOY_PATH }}/releases/$RELEASE ${{ vars.DEPLOY_PATH }}/current &&
+            sudo /usr/bin/systemctl restart php8.3-fpm
+          "
+
+  cleanup:
+    name: Cleanup old releases
+    needs: activate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.DEPLOY_KEY }}
+
+      - name: Purge old releases (keep 3)
+        run: |
+          ssh ${{ secrets.DEPLOY_HOST }} "
+            cd ${{ vars.DEPLOY_PATH }}/releases &&
+            ls -1t | tail -n +4 | xargs -r rm -rf
+          "

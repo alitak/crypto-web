@@ -19,15 +19,15 @@ jobs:
         run: |
           TIMESTAMP=$(date +"%Y%m%d%H%M%S")
           echo "RELEASE=$TIMESTAMP" >> $GITHUB_ENV
-          ssh ${{ secrets.DEPLOY_HOST }} "mkdir -p ${{ secrets.DEPLOY_PATH }}/releases/$TIMESTAMP"
+          ssh -p ${{ secrets.DEPLOY_PORT }} ${{ secrets.DEPLOY_HOST }} "mkdir -p ${{ secrets.DEPLOY_PATH }}/releases/$TIMESTAMP"
 
       - name: Clone repo
         run: |
-          ssh ${{ secrets.DEPLOY_HOST }} "git clone --depth=1 --branch main https://github.com/${{ github.repository }} ${{ secrets.DEPLOY_PATH }}/releases/$RELEASE"
+          ssh -p ${{ secrets.DEPLOY_PORT }} ${{ secrets.DEPLOY_HOST }} "git clone --depth=1 --branch main https://github.com/${{ github.repository }} ${{ secrets.DEPLOY_PATH }}/releases/$RELEASE"
 
       - name: Link shared files
         run: |
-          ssh ${{ secrets.DEPLOY_HOST }} "
+          ssh -p ${{ secrets.DEPLOY_PORT }} ${{ secrets.DEPLOY_HOST }} "
             ln -snf ${{ secrets.DEPLOY_PATH }}/shared/.env ${{ secrets.DEPLOY_PATH }}/releases/$RELEASE/.env &&
             ln -snf ${{ secrets.DEPLOY_PATH }}/shared/storage ${{ secrets.DEPLOY_PATH }}/releases/$RELEASE/storage
           "
@@ -44,7 +44,7 @@ jobs:
 
       - name: Composer install
         run: |
-          ssh ${{ secrets.DEPLOY_HOST }} "cd ${{ vars.DEPLOY_PATH }}/releases/$RELEASE && composer install --no-dev --optimize-autoloader"
+          ssh -p ${{ secrets.DEPLOY_PORT }} ${{ secrets.DEPLOY_HOST }} "cd ${{ vars.DEPLOY_PATH }}/releases/$RELEASE && composer install --no-dev --optimize-autoloader"
 
   npm:
     name: Build frontend assets
@@ -58,7 +58,7 @@ jobs:
 
       - name: NPM build
         run: |
-          ssh ${{ secrets.DEPLOY_HOST }} "cd ${{ vars.DEPLOY_PATH }}/releases/$RELEASE && /usr/bin/npm ci && /usr/bin/npm run build-only && rm -rf node_modules"
+          ssh -p ${{ secrets.DEPLOY_PORT }} ${{ secrets.DEPLOY_HOST }} "cd ${{ vars.DEPLOY_PATH }}/releases/$RELEASE && /usr/bin/npm ci && /usr/bin/npm run build-only && rm -rf node_modules"
 
   migrate:
     name: Run migrations and seed
@@ -72,7 +72,7 @@ jobs:
 
       - name: Artisan migrate
         run: |
-          ssh ${{ secrets.DEPLOY_HOST }} "cd ${{ vars.DEPLOY_PATH }}/releases/$RELEASE && php artisan migrate --seed --force"
+          ssh -p ${{ secrets.DEPLOY_PORT }} ${{ secrets.DEPLOY_HOST }} "cd ${{ vars.DEPLOY_PATH }}/releases/$RELEASE && php artisan migrate --seed --force"
 
   activate:
     name: Activate release & restart FPM
@@ -86,7 +86,7 @@ jobs:
 
       - name: Switch symlink and restart PHP
         run: |
-          ssh ${{ secrets.DEPLOY_HOST }} "
+          ssh -p ${{ secrets.DEPLOY_PORT }} ${{ secrets.DEPLOY_HOST }} "
             ln -sfn ${{ vars.DEPLOY_PATH }}/releases/$RELEASE ${{ vars.DEPLOY_PATH }}/current &&
             sudo /usr/bin/systemctl restart php8.3-fpm
           "
@@ -103,7 +103,7 @@ jobs:
 
       - name: Purge old releases (keep 3)
         run: |
-          ssh ${{ secrets.DEPLOY_HOST }} "
+          ssh -p ${{ secrets.DEPLOY_PORT }} ${{ secrets.DEPLOY_HOST }} "
             cd ${{ vars.DEPLOY_PATH }}/releases &&
             ls -1t | tail -n +4 | xargs -r rm -rf
           "

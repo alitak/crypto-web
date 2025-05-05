@@ -12,15 +12,13 @@ jobs:
     outputs:
       release: ${{ steps.set-release.outputs.release }}
     steps:
-      - name: Generate release dir
+      - name: Generate and output release dir
+        id: set-release
         run: |
           TIMESTAMP=$(date +"%Y%m%d%H%M%S")
           echo "RELEASE=$TIMESTAMP" >> $GITHUB_ENV
+          echo "release=$TIMESTAMP" >> $GITHUB_OUTPUT
           mkdir -p "${{ secrets.DEPLOY_PATH }}/releases/$TIMESTAMP"
-
-      - name: Set release output
-        id: set-release
-        run: echo "release=$RELEASE" >> $GITHUB_OUTPUT
 
       - name: Clone repo
         run: |

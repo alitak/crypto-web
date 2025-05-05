@@ -46,6 +46,11 @@ jobs:
     needs: composer
     runs-on: [self-hosted]
     steps:
+      - name: Debug release path
+        run: |
+          echo "Release path: ${{ secrets.DEPLOY_PATH }}/releases/${{ needs.prepare.outputs.release }}"
+          ls -la "${{ secrets.DEPLOY_PATH }}/releases/${{ needs.prepare.outputs.release }}"
+
       - name: NPM build
         run: |
           cd "${{ secrets.DEPLOY_PATH }}/releases/${{ needs.prepare.outputs.release }}" && /usr/bin/npm install && /usr/bin/npm run build-only && rm -rf node_modules

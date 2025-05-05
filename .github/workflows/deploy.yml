@@ -52,7 +52,7 @@ jobs:
 
       - name: Composer install
         run: |
-          ssh -p ${{ secrets.DEPLOY_PORT }} ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} "cd ${{ vars.DEPLOY_PATH }}/releases/$RELEASE && composer install --no-dev --optimize-autoloader"
+          ssh -p ${{ secrets.DEPLOY_PORT }} ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} "cd ${{ secrets.DEPLOY_PATH }}/releases/$RELEASE && composer install --no-dev --optimize-autoloader"
 
   npm:
     name: Build frontend assets
@@ -70,7 +70,7 @@ jobs:
 
       - name: NPM build
         run: |
-          ssh -p ${{ secrets.DEPLOY_PORT }} ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} "cd ${{ vars.DEPLOY_PATH }}/releases/$RELEASE && /usr/bin/npm ci && /usr/bin/npm run build-only && rm -rf node_modules"
+          ssh -p ${{ secrets.DEPLOY_PORT }} ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} "cd ${{ secrets.DEPLOY_PATH }}/releases/$RELEASE && /usr/bin/npm ci && /usr/bin/npm run build-only && rm -rf node_modules"
 
   migrate:
     name: Run migrations and seed
@@ -88,7 +88,7 @@ jobs:
 
       - name: Artisan migrate
         run: |
-          ssh -p ${{ secrets.DEPLOY_PORT }} ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} "cd ${{ vars.DEPLOY_PATH }}/releases/$RELEASE && php artisan migrate --seed --force"
+          ssh -p ${{ secrets.DEPLOY_PORT }} ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} "cd ${{ secrets.DEPLOY_PATH }}/releases/$RELEASE && php artisan migrate --seed --force"
 
   activate:
     name: Activate release & restart FPM
@@ -107,7 +107,7 @@ jobs:
       - name: Switch symlink and restart PHP
         run: |
           ssh -p ${{ secrets.DEPLOY_PORT }} ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} "
-            ln -sfn ${{ vars.DEPLOY_PATH }}/releases/$RELEASE ${{ vars.DEPLOY_PATH }}/current &&
+            ln -sfn ${{ secrets.DEPLOY_PATH }}/releases/$RELEASE ${{ secrets.DEPLOY_PATH }}/current &&
             sudo /usr/bin/systemctl restart php8.3-fpm
           "
 
@@ -128,6 +128,6 @@ jobs:
       - name: Purge old releases (keep 3)
         run: |
           ssh -p ${{ secrets.DEPLOY_PORT }} ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} "
-            cd ${{ vars.DEPLOY_PATH }}/releases &&
+            cd ${{ secrets.DEPLOY_PATH }}/releases &&
             ls -1t | tail -n +4 | xargs -r rm -rf
           "

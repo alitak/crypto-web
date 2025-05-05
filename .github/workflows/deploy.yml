@@ -48,7 +48,7 @@ jobs:
     steps:
       - name: NPM build
         run: |
-          cd "${{ secrets.DEPLOY_PATH }}/releases/${{ needs.prepare.outputs.release }}" && /usr/bin/npm ci && /usr/bin/npm run build-only && rm -rf node_modules
+          cd "${{ secrets.DEPLOY_PATH }}/releases/${{ needs.prepare.outputs.release }}" && /usr/bin/npm install && /usr/bin/npm run build-only && rm -rf node_modules
 
   migrate:
     name: Run migrations and seed
@@ -67,7 +67,7 @@ jobs:
       - name: Switch symlink and restart PHP
         run: |
           ln -sfn "${{ secrets.DEPLOY_PATH }}/releases/${{ needs.prepare.outputs.release }}" "${{ secrets.DEPLOY_PATH }}/current"
-          sudo /usr/bin/systemctl restart php8.3-fpm
+          /usr/bin/systemctl restart php8.3-fpm
 
   cleanup:
     name: Cleanup old releases

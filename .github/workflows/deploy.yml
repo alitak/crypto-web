@@ -16,18 +16,17 @@ jobs:
         id: set-release
         run: |
           TIMESTAMP=$(date +"%Y%m%d%H%M%S")
-          echo "RELEASE=$TIMESTAMP" >> $GITHUB_ENV
           echo "release=$TIMESTAMP" >> $GITHUB_OUTPUT
           mkdir -p "${{ secrets.DEPLOY_PATH }}/releases/$TIMESTAMP"
 
       - name: Clone repo
         run: |
-          git clone --depth=1 --branch main https://github.com/${{ github.repository }} "${{ secrets.DEPLOY_PATH }}/releases/${{ needs.prepare.outputs.release }}"
+          git clone --depth=1 --branch main https://github.com/${{ github.repository }} "${{ secrets.DEPLOY_PATH }}/releases/${{ steps.set-release.outputs.release }}"
 
       - name: Link shared files
         run: |
-          ln -snf "${{ secrets.DEPLOY_PATH }}/shared/.env" "${{ secrets.DEPLOY_PATH }}/releases/${{ needs.prepare.outputs.release }}/.env"
-          ln -snf "${{ secrets.DEPLOY_PATH }}/shared/storage" "${{ secrets.DEPLOY_PATH }}/releases/${{ needs.prepare.outputs.release }}/storage"
+          ln -snf "${{ secrets.DEPLOY_PATH }}/shared/.env" "${{ secrets.DEPLOY_PATH }}/releases/${{ steps.set-release.outputs.release }}/.env"
+          ln -snf "${{ secrets.DEPLOY_PATH }}/shared/storage" "${{ secrets.DEPLOY_PATH }}/releases/${{ steps.set-release.outputs.release }}/storage"
 
   composer:
     name: Install Composer dependencies

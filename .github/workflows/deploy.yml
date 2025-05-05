@@ -9,6 +9,8 @@ jobs:
   prepare:
     name: Prepare release directory
     runs-on: ubuntu-latest
+    outputs:
+      release: ${{ steps.set-release.outputs.release }}
     steps:
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.9.0
@@ -25,15 +27,19 @@ jobs:
           echo "RELEASE=$TIMESTAMP" >> $GITHUB_ENV
           ssh -p ${{ secrets.DEPLOY_PORT }} ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} "mkdir -p ${{ secrets.DEPLOY_PATH }}/releases/$TIMESTAMP"
 
+      - name: Set release output
+        id: set-release
+        run: echo "release=$RELEASE" >> $GITHUB_OUTPUT
+
       - name: Clone repo
         run: |
-          ssh -p ${{ secrets.DEPLOY_PORT }} ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} "git clone --depth=1 --branch main https://github.com/${{ github.repository }} ${{ secrets.DEPLOY_PATH }}/releases/$RELEASE"
+          ssh -p ${{ secrets.DEPLOY_PORT }} ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} "git clone --depth=1 --branch main https://github.com/${{ github.repository }} ${{ secrets.DEPLOY_PATH }}/releases/${{ needs.prepare.outputs.release }}"
 
       - name: Link shared files
         run: |
           ssh -p ${{ secrets.DEPLOY_PORT }} ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} "
-            ln -snf ${{ secrets.DEPLOY_PATH }}/shared/.env ${{ secrets.DEPLOY_PATH }}/releases/$RELEASE/.env &&
-            ln -snf ${{ secrets.DEPLOY_PATH }}/shared/storage ${{ secrets.DEPLOY_PATH }}/releases/$RELEASE/storage
+            ln -snf ${{ secrets.DEPLOY_PATH }}/shared/.env ${{ secrets.DEPLOY_PATH }}/releases/${{ needs.prepare.outputs.release }}/.env &&
+            ln -snf ${{ secrets.DEPLOY_PATH }}/shared/storage ${{ secrets.DEPLOY_PATH }}/releases/${{ needs.prepare.outputs.release }}/storage
           "
 
   composer:
@@ -52,7 +58,7 @@ jobs:
 
       - name: Composer install
         run: |
-          ssh -p ${{ secrets.DEPLOY_PORT }} ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} "cd ${{ secrets.DEPLOY_PATH }}/releases/$RELEASE && composer install --no-dev --optimize-autoloader"
+          ssh -p ${{ secrets.DEPLOY_PORT }} ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} "cd ${{ secrets.DEPLOY_PATH }}/releases/${{ needs.prepare.outputs.release }} && composer install --no-dev --optimize-autoloader"
 
   npm:
     name: Build frontend assets
@@ -70,7 +76,7 @@ jobs:
 
       - name: NPM build
         run: |
-          ssh -p ${{ secrets.DEPLOY_PORT }} ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} "cd ${{ secrets.DEPLOY_PATH }}/releases/$RELEASE && /usr/bin/npm ci && /usr/bin/npm run build-only && rm -rf node_modules"
+          ssh -p ${{ secrets.DEPLOY_PORT }} ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} "cd ${{ secrets.DEPLOY_PATH }}/releases/${{ needs.prepare.outputs.release }} && /usr/bin/npm ci && /usr/bin/npm run build-only && rm -rf node_modules"
 
   migrate:
     name: Run migrations and seed
@@ -88,7 +94,7 @@ jobs:
 
       - name: Artisan migrate
         run: |
-          ssh -p ${{ secrets.DEPLOY_PORT }} ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} "cd ${{ secrets.DEPLOY_PATH }}/releases/$RELEASE && php artisan migrate --seed --force"
+          ssh -p ${{ secrets.DEPLOY_PORT }} ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} "cd ${{ secrets.DEPLOY_PATH }}/releases/${{ needs.prepare.outputs.release }} && php artisan migrate --seed --force"
 
   activate:
     name: Activate release & restart FPM
@@ -107,7 +113,7 @@ jobs:
       - name: Switch symlink and restart PHP
         run: |
           ssh -p ${{ secrets.DEPLOY_PORT }} ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} "
-            ln -sfn ${{ secrets.DEPLOY_PATH }}/releases/$RELEASE ${{ secrets.DEPLOY_PATH }}/current &&
+            ln -sfn ${{ secrets.DEPLOY_PATH }}/releases/${{ needs.prepare.outputs.release }} ${{ secrets.DEPLOY_PATH }}/current &&
             sudo /usr/bin/systemctl restart php8.3-fpm
           "
 

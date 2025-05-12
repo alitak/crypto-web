@@ -77,10 +77,10 @@ class HomeController
             'total_pnl'                  => Number::percentage($totalPnl, 2, locale: 'hu-HU'),
             'monthly_interest'           => Number::percentage($monthlyInterest, 2, locale: 'hu-HU'),
             'yearly_interest'            => Number::percentage($yearlyInterest, 2, locale: 'hu-HU'),
-            'total_potential_profit'     => Number::format($totalPotentialProfit, 2, locale: 'hu-HU'),
-            'total_potential_pnl'        => Number::percentage($totalPotentialPnl, 2, locale: 'hu-HU'),
-            'potential_monthly_interest' => Number::percentage($potentialMonthlyInterest, 2, locale: 'hu-HU'),
-            'potential_yearly_interest'  => Number::percentage($potentialYearlyInterest, 2, locale: 'hu-HU'),
+            // 'total_potential_profit'     => Number::format($totalPotentialProfit, 2, locale: 'hu-HU'),
+            // 'total_potential_pnl'        => Number::percentage($totalPotentialPnl, 2, locale: 'hu-HU'),
+            // 'potential_monthly_interest' => Number::percentage($potentialMonthlyInterest, 2, locale: 'hu-HU'),
+            // 'potential_yearly_interest'  => Number::percentage($potentialYearlyInterest, 2, locale: 'hu-HU'),
         ];
     }
 

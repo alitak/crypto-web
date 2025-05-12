@@ -28,10 +28,10 @@ const props = defineProps<{
         total_pnl: string
         monthly_interest: string
         yearly_interest: string
-        total_potential_profit: string
-        total_potential_pnl: string
-        potential_monthly_interest: string
-        potential_yearly_interest: string
+        // total_potential_profit: string
+        // total_potential_pnl: string
+        // potential_monthly_interest: string
+        // potential_yearly_interest: string
     }
 }>()
 
@@ -80,11 +80,11 @@ onMounted(() => {
                         <div class="text-right">
                             <h4 class="text-xl font-bold">
                                 {{ props.total.total_profit }}₮
-                                ({{ props.total.total_potential_profit }}₮)
+                                <!-- ({{ props.total.total_potential_profit }}₮) -->
                             </h4>
                             <h4 class="text-xl font-bold">
                                 {{ props.total.total_pnl }}
-                                ({{ props.total.total_potential_pnl }})
+                                <!-- ({{ props.total.total_potential_pnl }}) -->
                             </h4>
                         </div>
                     </div>
@@ -95,11 +95,11 @@ onMounted(() => {
                         <div class="text-right">
                             <h4 class="text-xl font-bold">
                                 {{ props.total.monthly_interest }}
-                                ({{ props.total.potential_monthly_interest }})
+                                <!-- ({{ props.total.potential_monthly_interest }}) -->
                             </h4>
                             <h4 class="text-xl font-bold">
                                 {{ props.total.yearly_interest }}
-                                ({{ props.total.potential_yearly_interest }})
+                                <!-- ({{ props.total.potential_yearly_interest }}) -->
                             </h4>
                         </div>
                     </div>

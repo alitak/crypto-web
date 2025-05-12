@@ -39,7 +39,10 @@ jobs:
     steps:
       - name: Composer install
         run: |
-          cd "${{ secrets.DEPLOY_PATH }}/releases/${{ needs.prepare.outputs.release }}" && composer install --no-dev --optimize-autoloader
+          pushd "${{ secrets.DEPLOY_PATH }}/releases/${{ needs.prepare.outputs.release }}"
+          echo "Current directory: $(pwd)"
+          composer install --no-dev --optimize-autoloader
+          popd
 
   npm:
     name: Build frontend assets
@@ -53,10 +56,12 @@ jobs:
 
       - name: NPM build
         run: |
-          cd "${{ secrets.DEPLOY_PATH }}/releases/${{ needs.prepare.outputs.release }}"
+          pushd "${{ secrets.DEPLOY_PATH }}/releases/${{ needs.prepare.outputs.release }}"
+          echo "Current directory: $(pwd)"
           /usr/bin/npm install
           /usr/bin/npm run build-only
           rm -rf node_modules
+          popd
 
   migrate:
     name: Run migrations and seed
@@ -65,7 +70,10 @@ jobs:
     steps:
       - name: Artisan migrate
         run: |
-          cd "${{ secrets.DEPLOY_PATH }}/releases/${{ needs.prepare.outputs.release }}" && php artisan migrate --seed --force
+          pushd "${{ secrets.DEPLOY_PATH }}/releases/${{ needs.prepare.outputs.release }}"
+          echo "Current directory: $(pwd)"
+          php artisan migrate --seed --force
+          popd
 
   activate:
     name: Activate release & restart FPM

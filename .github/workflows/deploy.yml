@@ -56,12 +56,32 @@ jobs:
 
       - name: NPM build
         run: |
-          pushd "${{ secrets.DEPLOY_PATH }}/releases/${{ needs.prepare.outputs.release }}"
+          # Print the full release path for debugging
+          RELEASE_PATH="${{ secrets.DEPLOY_PATH }}/releases/${{ needs.prepare.outputs.release }}"
+          echo "Full release path: $RELEASE_PATH"
+          
+          # Check if the directory exists
+          if [ ! -d "$RELEASE_PATH" ]; then
+            echo "ERROR: Release directory does not exist: $RELEASE_PATH"
+            exit 1
+          fi
+          
+          # Check if package.json exists
+          if [ ! -f "$RELEASE_PATH/package.json" ]; then
+            echo "ERROR: package.json not found in $RELEASE_PATH"
+            ls -la "$RELEASE_PATH"
+            exit 1
+          fi
+          
+          # Change to release directory and run npm commands with explicit path
+          cd "$RELEASE_PATH"
           echo "Current directory: $(pwd)"
-          /usr/bin/npm install
-          /usr/bin/npm run build-only
-          rm -rf node_modules
-          popd
+          ls -la
+          
+          # Run npm commands with explicit path to package.json
+          /usr/bin/npm --prefix "$RELEASE_PATH" install
+          /usr/bin/npm --prefix "$RELEASE_PATH" run build-only
+          rm -rf "$RELEASE_PATH/node_modules"
 
   migrate:
     name: Run migrations and seed

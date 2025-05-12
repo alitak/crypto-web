@@ -53,7 +53,10 @@ jobs:
 
       - name: NPM build
         run: |
-          cd "${{ secrets.DEPLOY_PATH }}/releases/${{ needs.prepare.outputs.release }}" && /usr/bin/npm install && /usr/bin/npm run build-only && rm -rf node_modules
+          cd "${{ secrets.DEPLOY_PATH }}/releases/${{ needs.prepare.outputs.release }}"
+          /usr/bin/npm install
+          /usr/bin/npm run build-only
+          rm -rf node_modules
 
   migrate:
     name: Run migrations and seed

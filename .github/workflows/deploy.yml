@@ -35,8 +35,9 @@ jobs:
 
       - name: Export release path
         run: |
-          echo "RELEASE_DIR=${{ steps.set-release.outputs.release }}" >> $GITHUB_ENV
-          echo "RELEASE_PATH=${{ secrets.DEPLOY_PATH }}/releases/${{ steps.set-release.outputs.release }}" >> $GITHUB_ENV
+          RELEASE="${{ steps.set-release.outputs.release }}"
+          echo "RELEASE_DIR=$RELEASE" >> $GITHUB_ENV
+          echo "RELEASE_PATH=${{ secrets.DEPLOY_PATH }}/releases/$RELEASE" >> $GITHUB_ENV
 
   composer:
     name: Install Composer dependencies

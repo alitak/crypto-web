@@ -38,13 +38,9 @@ jobs:
     needs: prepare
     runs-on: [self-hosted]
     steps:
-      - name: Determine release path
-        run: |
-          RELEASE_DIR=$(ls -1t "${{ secrets.DEPLOY_PATH }}/releases/" | grep -E '^[0-9]{14}$' | head -n 1)
-          echo "RELEASE_PATH=${{ secrets.DEPLOY_PATH }}/releases/$RELEASE_DIR" >> $GITHUB_ENV
-
       - name: Composer install
         run: |
+          RELEASE_DIR=$(ls -1t "${{ secrets.DEPLOY_PATH }}/releases/" | grep -E '^[0-9]{14}$' | head -n 1)
           cd "$RELEASE_PATH"
           composer install --no-dev --optimize-autoloader
 
@@ -53,13 +49,9 @@ jobs:
     needs: composer
     runs-on: [self-hosted]
     steps:
-      - name: Determine release path
-        run: |
-          RELEASE_DIR=$(ls -1t "${{ secrets.DEPLOY_PATH }}/releases/" | grep -E '^[0-9]{14}$' | head -n 1)
-          echo "RELEASE_PATH=${{ secrets.DEPLOY_PATH }}/releases/$RELEASE_DIR" >> $GITHUB_ENV
-
       - name: NPM build
         run: |
+          RELEASE_DIR=$(ls -1t "${{ secrets.DEPLOY_PATH }}/releases/" | grep -E '^[0-9]{14}$' | head -n 1)
           cd "$RELEASE_PATH"
           /usr/bin/npm install
           /usr/bin/npm run build-only
@@ -70,13 +62,9 @@ jobs:
     needs: npm
     runs-on: [self-hosted]
     steps:
-      - name: Determine release path
-        run: |
-          RELEASE_DIR=$(ls -1t "${{ secrets.DEPLOY_PATH }}/releases/" | grep -E '^[0-9]{14}$' | head -n 1)
-          echo "RELEASE_PATH=${{ secrets.DEPLOY_PATH }}/releases/$RELEASE_DIR" >> $GITHUB_ENV
-
       - name: Artisan migrate
         run: |
+          RELEASE_DIR=$(ls -1t "${{ secrets.DEPLOY_PATH }}/releases/" | grep -E '^[0-9]{14}$' | head -n 1)
           cd "$RELEASE_PATH"
           php artisan migrate --seed --force
 
@@ -85,15 +73,11 @@ jobs:
     needs: migrate
     runs-on: [self-hosted]
     steps:
-      - name: Determine release path
-        run: |
-          RELEASE_DIR=$(ls -1t "${{ secrets.DEPLOY_PATH }}/releases/" | grep -E '^[0-9]{14}$' | head -n 1)
-          echo "RELEASE_PATH=${{ secrets.DEPLOY_PATH }}/releases/$RELEASE_DIR" >> $GITHUB_ENV
-
       - name: Switch symlink and restart PHP
         run: |
-          ln -sfn "$RELEASE_PATH" "${{ secrets.DEPLOY_PATH }}/current"
-          /usr/bin/systemctl restart php8.3-fpm
+          RELEASE_DIR=$(ls -1t "${{ secrets.DEPLOY_PATH }}/releases/" | grep -E '^[0-9]{14}$' | head -n 1)
+          ln -sfn "${{ secrets.DEPLOY_PATH }}/releases/$RELEASE_DIR" "${{ secrets.DEPLOY_PATH }}/current"
+          sudo /usr/bin/systemctl restart php8.3-fpm
 
   # cleanup:
   #   name: Cleanup old releases

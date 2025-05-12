@@ -41,7 +41,7 @@ jobs:
       - name: Composer install
         run: |
           RELEASE_DIR=$(ls -1t "${{ secrets.DEPLOY_PATH }}/releases/" | grep -E '^[0-9]{14}$' | head -n 1)
-          cd "$RELEASE_PATH"
+          cd "${{ secrets.DEPLOY_PATH }}/releases/$RELEASE_DIR"
           composer install --no-dev --optimize-autoloader
 
   npm:
@@ -52,7 +52,7 @@ jobs:
       - name: NPM build
         run: |
           RELEASE_DIR=$(ls -1t "${{ secrets.DEPLOY_PATH }}/releases/" | grep -E '^[0-9]{14}$' | head -n 1)
-          cd "$RELEASE_PATH"
+          cd "${{ secrets.DEPLOY_PATH }}/releases/$RELEASE_DIR"
           /usr/bin/npm install
           /usr/bin/npm run build-only
           rm -rf node_modules
@@ -65,7 +65,7 @@ jobs:
       - name: Artisan migrate
         run: |
           RELEASE_DIR=$(ls -1t "${{ secrets.DEPLOY_PATH }}/releases/" | grep -E '^[0-9]{14}$' | head -n 1)
-          cd "$RELEASE_PATH"
+          cd "${{ secrets.DEPLOY_PATH }}/releases/$RELEASE_DIR"
           php artisan migrate --seed --force
 
   activate:
@@ -77,7 +77,7 @@ jobs:
         run: |
           RELEASE_DIR=$(ls -1t "${{ secrets.DEPLOY_PATH }}/releases/" | grep -E '^[0-9]{14}$' | head -n 1)
           ln -sfn "${{ secrets.DEPLOY_PATH }}/releases/$RELEASE_DIR" "${{ secrets.DEPLOY_PATH }}/current"
-          sudo /usr/bin/systemctl restart php8.3-fpm
+          /usr/bin/systemctl restart php8.3-fpm
 
   # cleanup:
   #   name: Cleanup old releases
@@ -88,3 +88,4 @@ jobs:
   #       run: |
   #         cd "${{ secrets.DEPLOY_PATH }}/releases"
   #         ls -1t | tail -n +4 | xargs -r rm -rf
+  

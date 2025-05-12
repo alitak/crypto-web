@@ -39,10 +39,23 @@ jobs:
     steps:
       - name: Composer install
         run: |
-          pushd "${{ secrets.DEPLOY_PATH }}/releases/${{ needs.prepare.outputs.release }}"
+          # Print the full release path for debugging
+          RELEASE_PATH="${{ secrets.DEPLOY_PATH }}/releases/${{ needs.prepare.outputs.release }}"
+          echo "Full release path: $RELEASE_PATH"
+          
+          # Check if the directory exists
+          if [ ! -d "$RELEASE_PATH" ]; then
+            echo "ERROR: Release directory does not exist: $RELEASE_PATH"
+            exit 1
+          fi
+          
+          # Change to release directory
+          cd "$RELEASE_PATH"
           echo "Current directory: $(pwd)"
+          ls -la
+          
+          # Run composer
           composer install --no-dev --optimize-autoloader
-          popd
 
   npm:
     name: Build frontend assets
@@ -90,10 +103,22 @@ jobs:
     steps:
       - name: Artisan migrate
         run: |
-          pushd "${{ secrets.DEPLOY_PATH }}/releases/${{ needs.prepare.outputs.release }}"
+          # Print the full release path for debugging
+          RELEASE_PATH="${{ secrets.DEPLOY_PATH }}/releases/${{ needs.prepare.outputs.release }}"
+          echo "Full release path: $RELEASE_PATH"
+          
+          # Check if the directory exists
+          if [ ! -d "$RELEASE_PATH" ]; then
+            echo "ERROR: Release directory does not exist: $RELEASE_PATH"
+            exit 1
+          fi
+          
+          # Change to release directory
+          cd "$RELEASE_PATH"
           echo "Current directory: $(pwd)"
+          
+          # Run migrations
           php artisan migrate --seed --force
-          popd
 
   activate:
     name: Activate release & restart FPM

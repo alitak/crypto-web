@@ -17,6 +17,7 @@ jobs:
         run: |
           TIMESTAMP=$(date +"%Y%m%d%H%M%S")
           echo "release=$TIMESTAMP" >> $GITHUB_OUTPUT
+          echo "Generated timestamp: $TIMESTAMP"
           mkdir -p "${{ secrets.DEPLOY_PATH }}/releases/$TIMESTAMP"
 
       - name: Clone repo
@@ -39,20 +40,33 @@ jobs:
     steps:
       - name: Composer install
         run: |
-          # Print the full release path for debugging
-          RELEASE_PATH="${{ secrets.DEPLOY_PATH }}/releases/${{ needs.prepare.outputs.release }}"
+          # Debug the outputs from prepare job
+          echo "Prepare job release output: '${{ needs.prepare.outputs.release }}'"
+          
+          # Check if the release value is empty and find the most recent release directory if needed
+          if [ -z "${{ needs.prepare.outputs.release }}" ]; then
+            echo "WARNING: Release variable is empty, finding most recent release directory..."
+            RELEASE_DIR=$(ls -1t "${{ secrets.DEPLOY_PATH }}/releases/" | grep -E '^[0-9]{14}$' | head -n 1)
+            echo "Found most recent release directory: $RELEASE_DIR"
+          else
+            RELEASE_DIR="${{ needs.prepare.outputs.release }}"
+            echo "Using provided release directory: $RELEASE_DIR"
+          fi
+          
+          # Set the full release path
+          RELEASE_PATH="${{ secrets.DEPLOY_PATH }}/releases/$RELEASE_DIR"
           echo "Full release path: $RELEASE_PATH"
           
           # Check if the directory exists
           if [ ! -d "$RELEASE_PATH" ]; then
             echo "ERROR: Release directory does not exist: $RELEASE_PATH"
+            ls -la "${{ secrets.DEPLOY_PATH }}/releases/"
             exit 1
           fi
           
           # Change to release directory
           cd "$RELEASE_PATH"
           echo "Current directory: $(pwd)"
-          ls -la
           
           # Run composer
           composer install --no-dev --optimize-autoloader
@@ -69,32 +83,45 @@ jobs:
 
       - name: NPM build
         run: |
-          # Print the full release path for debugging
-          RELEASE_PATH="${{ secrets.DEPLOY_PATH }}/releases/${{ needs.prepare.outputs.release }}"
+          # Debug the outputs from prepare job
+          echo "Prepare job release output: '${{ needs.prepare.outputs.release }}'"
+          
+          # Check if the release value is empty and find the most recent release directory if needed
+          if [ -z "${{ needs.prepare.outputs.release }}" ]; then
+            echo "WARNING: Release variable is empty, finding most recent release directory..."
+            RELEASE_DIR=$(ls -1t "${{ secrets.DEPLOY_PATH }}/releases/" | grep -E '^[0-9]{14}$' | head -n 1)
+            echo "Found most recent release directory: $RELEASE_DIR"
+          else
+            RELEASE_DIR="${{ needs.prepare.outputs.release }}"
+            echo "Using provided release directory: $RELEASE_DIR"
+          fi
+          
+          # Set the full release path
+          RELEASE_PATH="${{ secrets.DEPLOY_PATH }}/releases/$RELEASE_DIR"
           echo "Full release path: $RELEASE_PATH"
           
           # Check if the directory exists
           if [ ! -d "$RELEASE_PATH" ]; then
             echo "ERROR: Release directory does not exist: $RELEASE_PATH"
+            ls -la "${{ secrets.DEPLOY_PATH }}/releases/"
             exit 1
           fi
           
-          # Check if package.json exists
+          # Verify package.json exists
           if [ ! -f "$RELEASE_PATH/package.json" ]; then
             echo "ERROR: package.json not found in $RELEASE_PATH"
             ls -la "$RELEASE_PATH"
             exit 1
           fi
           
-          # Change to release directory and run npm commands with explicit path
+          # Change to release directory
           cd "$RELEASE_PATH"
           echo "Current directory: $(pwd)"
-          ls -la
           
-          # Run npm commands with explicit path to package.json
-          /usr/bin/npm --prefix "$RELEASE_PATH" install
-          /usr/bin/npm --prefix "$RELEASE_PATH" run build-only
-          rm -rf "$RELEASE_PATH/node_modules"
+          # Run npm commands
+          /usr/bin/npm install
+          /usr/bin/npm run build-only
+          rm -rf node_modules
 
   migrate:
     name: Run migrations and seed
@@ -103,13 +130,27 @@ jobs:
     steps:
       - name: Artisan migrate
         run: |
-          # Print the full release path for debugging
-          RELEASE_PATH="${{ secrets.DEPLOY_PATH }}/releases/${{ needs.prepare.outputs.release }}"
+          # Debug the outputs from prepare job
+          echo "Prepare job release output: '${{ needs.prepare.outputs.release }}'"
+          
+          # Check if the release value is empty and find the most recent release directory if needed
+          if [ -z "${{ needs.prepare.outputs.release }}" ]; then
+            echo "WARNING: Release variable is empty, finding most recent release directory..."
+            RELEASE_DIR=$(ls -1t "${{ secrets.DEPLOY_PATH }}/releases/" | grep -E '^[0-9]{14}$' | head -n 1)
+            echo "Found most recent release directory: $RELEASE_DIR"
+          else
+            RELEASE_DIR="${{ needs.prepare.outputs.release }}"
+            echo "Using provided release directory: $RELEASE_DIR"
+          fi
+          
+          # Set the full release path
+          RELEASE_PATH="${{ secrets.DEPLOY_PATH }}/releases/$RELEASE_DIR"
           echo "Full release path: $RELEASE_PATH"
           
           # Check if the directory exists
           if [ ! -d "$RELEASE_PATH" ]; then
             echo "ERROR: Release directory does not exist: $RELEASE_PATH"
+            ls -la "${{ secrets.DEPLOY_PATH }}/releases/"
             exit 1
           fi
           
@@ -127,7 +168,32 @@ jobs:
     steps:
       - name: Switch symlink and restart PHP
         run: |
-          ln -sfn "${{ secrets.DEPLOY_PATH }}/releases/${{ needs.prepare.outputs.release }}" "${{ secrets.DEPLOY_PATH }}/current"
+          # Debug the outputs from prepare job
+          echo "Prepare job release output: '${{ needs.prepare.outputs.release }}'"
+          
+          # Check if the release value is empty and find the most recent release directory if needed
+          if [ -z "${{ needs.prepare.outputs.release }}" ]; then
+            echo "WARNING: Release variable is empty, finding most recent release directory..."
+            RELEASE_DIR=$(ls -1t "${{ secrets.DEPLOY_PATH }}/releases/" | grep -E '^[0-9]{14}$' | head -n 1)
+            echo "Found most recent release directory: $RELEASE_DIR"
+          else
+            RELEASE_DIR="${{ needs.prepare.outputs.release }}"
+            echo "Using provided release directory: $RELEASE_DIR"
+          fi
+          
+          # Set the full release path
+          RELEASE_PATH="${{ secrets.DEPLOY_PATH }}/releases/$RELEASE_DIR"
+          echo "Full release path: $RELEASE_PATH"
+          
+          # Check if the directory exists
+          if [ ! -d "$RELEASE_PATH" ]; then
+            echo "ERROR: Release directory does not exist: $RELEASE_PATH"
+            ls -la "${{ secrets.DEPLOY_PATH }}/releases/"
+            exit 1
+          fi
+          
+          # Switch symlink and restart PHP
+          ln -sfn "$RELEASE_PATH" "${{ secrets.DEPLOY_PATH }}/current"
           /usr/bin/systemctl restart php8.3-fpm
 
   cleanup:

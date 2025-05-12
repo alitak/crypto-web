@@ -77,15 +77,14 @@ jobs:
         run: |
           RELEASE_DIR=$(ls -1t "${{ secrets.DEPLOY_PATH }}/releases/" | grep -E '^[0-9]{14}$' | head -n 1)
           ln -sfn "${{ secrets.DEPLOY_PATH }}/releases/$RELEASE_DIR" "${{ secrets.DEPLOY_PATH }}/current"
-          /usr/bin/systemctl restart php8.3-fpm
+          sudo /usr/bin/systemctl restart php8.3-fpm
 
-  # cleanup:
-  #   name: Cleanup old releases
-  #   needs: activate
-  #   runs-on: [self-hosted]
-  #   steps:
-  #     - name: Purge old releases (keep 3)
-  #       run: |
-  #         cd "${{ secrets.DEPLOY_PATH }}/releases"
-  #         ls -1t | tail -n +4 | xargs -r rm -rf
-  
+  cleanup:
+    name: Cleanup old releases
+    needs: activate
+    runs-on: [self-hosted]
+    steps:
+      - name: Purge old releases (keep 3)
+        run: |
+          cd "${{ secrets.DEPLOY_PATH }}/releases"
+          ls -1t | tail -n +4 | xargs -r rm -rf

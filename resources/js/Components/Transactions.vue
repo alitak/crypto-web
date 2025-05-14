@@ -7,6 +7,18 @@ const props = defineProps<{
     transactions: Transaction[]
     currentPage: number
 }>()
+
+function getTransactionColor(transaction: Transaction) {
+    if (transaction.event && transaction.event.includes('SELL')) {
+        return '#e53e3e'
+    }
+
+    if (transaction.event && transaction.event.includes('BUY')) {
+        return '#3182ce'
+    }
+
+    return '#38a169'
+}
 </script>
 
 <template>
@@ -16,7 +28,12 @@ const props = defineProps<{
 
     <a id="transactions"></a>
 
-    <div class="grid grid-cols-4 items-center gap-1 sm:gap-2 sm:grid-cols-12 mb-4" v-for="(transaction, index) in props.transactions" :key="index">
+    <div
+        class="grid grid-cols-4 items-center gap-1 sm:gap-2 sm:grid-cols-12 mb-4 border-l-4 pl-2"
+        v-for="(transaction, index) in props.transactions"
+        :key="index"
+        :style="{ borderLeftColor: getTransactionColor(transaction) }"
+    >
         <div class="col-span-4 sm:col-span-12 text-center">
             <h5 class="font-medium text-black">{{ transaction.happened_at }}</h5>
         </div>

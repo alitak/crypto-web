@@ -26,7 +26,10 @@ class HomeController
 
     public function __invoke(): Response
     {
-        $wallet = Wallet::query()->orderBy('coin')->get();
+        $wallet = Wallet::query()
+            ->when(request('coin'), fn ($query, $coin) => $query->where('coin', $coin))
+            ->orderBy('coin')
+            ->get();
         $wallet->map(function (Wallet $wallet): void {
             $wallet->current_value = $wallet->stock * $wallet->current_price + $wallet->account;
             $wallet->current_profit = $wallet->current_value - $wallet->start_account - $wallet->fees;

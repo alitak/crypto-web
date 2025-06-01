@@ -10,11 +10,12 @@ const props = defineProps<{
 }>()
 
 const fields = ref<{ label: string; key: keyof Wallet; suffix: string }[]>([
+    { label: "cost", key: "cost", suffix: "₮" },
+    { label: "stock", key: "stock", suffix: "" },
     { label: "avg", key: "avg_price", suffix: "₮" },
     { label: "value", key: "current_value", suffix: "₮" },
-    { label: "stock", key: "stock", suffix: "" },
-    { label: "packet", key: "packet_price", suffix: "₮" },
     { label: "count", key: "package_count", suffix: "" },
+    { label: "packet", key: "packet_price", suffix: "₮" },
     // { label: "Kezdőtőke", key: "start_account", suffix: "₮" },
     { label: "account", key: "account", suffix: "₮" },
     { label: "min", key: "min_threshold_percent_value", suffix: "%" },
@@ -61,7 +62,7 @@ usePoll(10000, {
                     </div>
                     <div class="col-span-5 flex flex-col items-center font-medium">
                         <div class="w-full grid grid-cols-3 gap-x-3 gap-y-2 font-sans text-base md:text-base mb-2 text-center">
-                            <div v-for="field in fields" :key="field.key" class="flex flex-col items-center sm:flex-row sm:justify-evenly sm:text-left">
+                            <div v-for="field in fields" :key="field.key" class="flex flex-col items-center sm:flex-row sm:justify-between">
                                 <div class="mr-0 md:mr-1">{{ field.label }}</div>
                                 <div>{{ item[field.key] }}{{ field.suffix }}</div>
                             </div>

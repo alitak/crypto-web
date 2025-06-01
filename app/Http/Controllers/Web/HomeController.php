@@ -31,8 +31,8 @@ class HomeController
             ->orderBy('coin')
             ->get();
         $wallet->map(function (Wallet $wallet): void {
-            $wallet->current_value = $wallet->stock * $wallet->current_price + $wallet->account;
-            $wallet->current_profit = $wallet->current_value - $wallet->start_account - $wallet->fees;
+            $wallet->current_value = $wallet->stock * $wallet->current_price;
+            $wallet->current_profit = $wallet->current_value - $wallet->fees - $wallet->cost;
             // $wallet->potential_value = 0;
             // $maxThreshold = ($wallet->avg_price < $wallet->max_threshold ? $wallet->max_threshold : $wallet->avg_price);
             // $stock = $wallet->stock;

@@ -67,7 +67,7 @@ class HomeController
             'total_pnl'                  => Number::percentage($totalPnl, 2, locale: 'hu-HU'),
             'monthly_interest'           => Number::percentage($monthlyInterest, 2, locale: 'hu-HU'),
             'yearly_interest'            => Number::percentage($yearlyInterest, 2, locale: 'hu-HU'),
-        }
+        ];
     }
 
     protected function calculateInterest(float $totalProfit, float $totalStartingBalance, int $days): array

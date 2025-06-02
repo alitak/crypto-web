@@ -18,9 +18,10 @@ const fields = ref<{ label: string; key: keyof Wallet; suffix: string }[]>([
     { label: "packet", key: "packet_price", suffix: "₮" },
     // { label: "Kezdőtőke", key: "start_account", suffix: "₮" },
     { label: "account", key: "account", suffix: "₮" },
+    { label: "start", key: "start_account", suffix: "₮" },
+    { label: "fees", key: "fees", suffix: "₮" },
     { label: "min", key: "min_threshold_percent_value", suffix: "%" },
     { label: "max", key: "max_threshold_percent_value", suffix: "%" },
-    { label: "fees", key: "fees", suffix: "₮" },
 ])
 
 const coinColor = (avgPrice: number, currentPrice: number, maxThreshold: number): string => {

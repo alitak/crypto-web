@@ -32,20 +32,7 @@ class HomeController
             ->get();
         $wallet->map(function (Wallet $wallet): void {
             $wallet->current_value = $wallet->stock * $wallet->current_price;
-            $wallet->current_profit = $wallet->current_value - $wallet->cost;
-            // $wallet->potential_value = 0;
-            // $maxThreshold = ($wallet->avg_price < $wallet->max_threshold ? $wallet->max_threshold : $wallet->avg_price);
-            // $stock = $wallet->stock;
-            // for ($i = 0; $i <= $wallet->package_count; $i++) {
-                // $quantity = $wallet->packet_price / $maxThreshold;
-                // $stock -= $quantity;
-                // $wallet->potential_value = $wallet->potential_value + $quantity * $maxThreshold - $quantity * $maxThreshold * self::FEE;
-                // $maxThreshold *= $wallet->max_threshold_percent_value;
-            // }
-
-            // $wallet->potential_value = $wallet->potential_value + $stock * $maxThreshold - $stock * $maxThreshold * self::FEE;
-            // $wallet->potential_account = $wallet->account + $wallet->potential_value;
-            // $wallet->potential_profit = $wallet->potential_account - $wallet->start_account;
+            $wallet->current_profit = ($wallet->current_value + $wallet->account) - $wallet->start_account;
         });
 
         $transactionPagination = Transaction::query()
@@ -80,11 +67,7 @@ class HomeController
             'total_pnl'                  => Number::percentage($totalPnl, 2, locale: 'hu-HU'),
             'monthly_interest'           => Number::percentage($monthlyInterest, 2, locale: 'hu-HU'),
             'yearly_interest'            => Number::percentage($yearlyInterest, 2, locale: 'hu-HU'),
-            // 'total_potential_profit'     => Number::format($totalPotentialProfit, 2, locale: 'hu-HU'),
-            // 'total_potential_pnl'        => Number::percentage($totalPotentialPnl, 2, locale: 'hu-HU'),
-            // 'potential_monthly_interest' => Number::percentage($potentialMonthlyInterest, 2, locale: 'hu-HU'),
-            // 'potential_yearly_interest'  => Number::percentage($potentialYearlyInterest, 2, locale: 'hu-HU'),
-        ];
+        }
     }
 
     protected function calculateInterest(float $totalProfit, float $totalStartingBalance, int $days): array

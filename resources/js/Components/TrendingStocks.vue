@@ -16,10 +16,10 @@ const fields = ref<{ label: string; key: keyof Wallet; suffix: string }[]>([
     { label: "value", key: "current_value", suffix: "₮" },
     { label: "count", key: "package_count", suffix: "" },
     { label: "packet", key: "packet_price", suffix: "₮" },
-    // { label: "Kezdőtőke", key: "start_account", suffix: "₮" },
     { label: "account", key: "account", suffix: "₮" },
     { label: "start", key: "start_account", suffix: "₮" },
     { label: "fees", key: "fees", suffix: "₮" },
+    { label: "start", key: "start_account", suffix: "₮" },
     { label: "min", key: "min_threshold_percent_value", suffix: "%" },
     { label: "max", key: "max_threshold_percent_value", suffix: "%" },
 ])

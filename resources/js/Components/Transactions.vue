@@ -39,7 +39,7 @@ function getTransactionColor(transaction: Transaction) {
         </div>
         <div class="col-span-1 h-11.5 w-11.5 items-center justify-center rounded-full bg-[#EEF2F8]">
             <a :href="`${route('home', {'coin': transaction.coin})}#transactions`">
-                <img :src="`/images/logo/${transaction.coin}.svg`" :alt="transaction.coin" class="object-cover"/>
+                <img :src="`/images/logo/${transaction.coin}.svg`" :alt="transaction.coin" class="object-fit h-full w-full"/>
             </a>
         </div>
 

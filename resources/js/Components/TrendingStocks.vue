@@ -47,7 +47,7 @@ usePoll(10000, {
                     <div class="col-span-1 flex flex-col items-center font-medium">
                         <div class="h-11.5 w-11.5 flex items-center rounded-full bg-[#EEF2F8]">
                             <a :href="`${route('home', {'coin': item.coin})}#transactions`">
-                                <img :src="`/images/logo/${item.coin}.svg`" :alt="item.coin" class="h-full w-full object-contain"/>
+                                <img :src="`/images/logo/${item.coin}.svg`" :alt="item.coin" class="h-11.5 w-11.5 object-fit"/>
                             </a>
                         </div>
                         <div class="mt-1 text-center text-base">

@@ -22,7 +22,7 @@ class HomeController
 
     public const int START_DAY = 1;
 
-    public const float FEE = 0.00075;
+    public const float FEE = 0.0007125;
 
     public function __invoke(): Response
     {
@@ -38,7 +38,7 @@ class HomeController
         $transactionPagination = Transaction::query()
             ->when(request('coin'), fn ($query, $coin) => $query->where('coin', $coin))
             ->latest('happened_at')
-            ->paginate(20);
+            ->paginate(35);
 
         return Inertia::render('Home', [
             'transactions'           => Inertia::merge(TransactionResource::collection($transactionPagination->items())),

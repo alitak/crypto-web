@@ -13,6 +13,8 @@ class WalletResource extends JsonResource
     #[Override]
     public function toArray(Request $request): array
     {
+        $package_profit = ($this->stock / $this->quantity) - $this->cost / ($this->quantity * $this->trigger_price);
+
         return [
             'coin'                        => $this->coin,
             'package_count'               => $this->package_count,
@@ -35,6 +37,8 @@ class WalletResource extends JsonResource
             'min_threshold_percent_value' => round((1 - $this->min_threshold_percent_value) * 100, 1),
             'max_threshold_percent_value' => round(($this->max_threshold_percent_value - 1) * 100, 1),
             'start_account'               => $this->start_account,
+            'package_profit'              => round($package_profit, 2),
+            'url_profit'                  => round($package_profit * $this->packet_price, 2),
         ];
     }
 }

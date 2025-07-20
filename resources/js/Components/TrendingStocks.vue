@@ -22,6 +22,8 @@ const fields = ref<{ label: string; key: keyof Wallet; suffix: string }[]>([
     { label: "start", key: "start_account", suffix: "₮" },
     { label: "min", key: "min_threshold_percent_value", suffix: "%" },
     { label: "max", key: "max_threshold_percent_value", suffix: "%" },
+    { label: "p profit", key: "package_profit", suffix: "" },
+    { label: "url profit", key: "url_profit", suffix: "₮" },
 ])
 
 const coinColor = (avgPrice: number, currentPrice: number, maxThreshold: number): string => {

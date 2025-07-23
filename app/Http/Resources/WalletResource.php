@@ -13,7 +13,7 @@ class WalletResource extends JsonResource
     #[Override]
     public function toArray(Request $request): array
     {
-        $package_profit = ($this->stock / $this->quantity) - $this->cost / ($this->quantity * $this->trigger_price);
+        $package_profit = ($this->stock / $this->quantity) - $this->cost / ($this->quantity * $this->current_price);
 
         return [
             'coin'                        => $this->coin,

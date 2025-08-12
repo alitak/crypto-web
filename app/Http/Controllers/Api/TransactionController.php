@@ -39,7 +39,7 @@ class TransactionController extends Controller
                 'account'       => $matches['acc'],
                 'total'         => $matches['total'] ?? null,
                 'quantity'      => $matches['quan'] ?? null,
-                'happened_at'   => Carbon::createFromFormat('YmdHi', $request->happened_at, 'UTC')
+                'happened_at'   => Carbon::createFromFormat('YmdHi', $request->happened_at)
                     ->setTimezone(config('app.timezone'))
                     ->format('Y-m-d H:i:s'),
             ]);
